@@ -123,6 +123,7 @@
                 android:layout_marginTop="@dimen/_8mdp"
                 app:cardCornerRadius="@dimen/_12mdp"
                 app:cardElevation="@dimen/_3mdp"
+                android:layout_marginBottom="@dimen/_10mdp"
                 app:layout_constraintTop_toBottomOf="@id/headerCard">
 
                 <LinearLayout
@@ -490,13 +491,18 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="68dp"
+        app:labelVisibilityMode="unlabeled"
+        app:itemHorizontalTranslationEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:layout_gravity="bottom"
         android:background="@color/white"
         app:elevation="@dimen/_8mdp"
         app:itemIconTint="@color/selector_color"
         app:itemTextColor="@color/selector_color"
-        app:layout_constraintBottom_toBottomOf="parent"
+         android:visibility="gone"
         app:menu="@menu/admin_bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
