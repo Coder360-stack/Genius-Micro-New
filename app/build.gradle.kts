@@ -76,6 +76,9 @@ dependencies {
     implementation ("com.github.CanHub:Android-Image-Cropper:3.1.3")
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> a7950c80503642a42f360b8df071c530ae832800
 }
