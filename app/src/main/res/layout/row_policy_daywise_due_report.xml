@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:id="@+id/tv_row_loan_due_report_lcode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="PCode"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+        <View
+            android:layout_width="1dp"
+            android:background="@color/tr_back"
+            android:layout_height="match_parent">
+
+        </View>
+
+        <TextView
+            android:id="@+id/tv_row_loan_due_report_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="Name"
+            android:maxLines="1"
+
+
+            android:textSize="10sp"
+            android:textStyle="bold" />
+        <View
+            android:layout_width="1dp"
+            android:background="@color/tr_back"
+            android:layout_height="match_parent">
+
+        </View>
+
+        <TextView
+            android:id="@+id/tv_row_loan_due_report_ph_no"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="Pdate"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+        <View
+            android:layout_width="1dp"
+            android:background="@color/tr_back"
+            android:layout_height="match_parent">
+
+        </View>
+
+        <TextView
+            android:id="@+id/tv_row_loan_due_report_due_emi"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="Due inst"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+        <View
+            android:layout_width="1dp"
+            android:background="@color/tr_back"
+            android:layout_height="match_parent">
+
+        </View>
+
+        <TextView
+            android:id="@+id/tv_row_loan_due_report_due_emi_amnt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="Policy Amt."
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+        <View
+            android:layout_width="1dp"
+            android:background="@color/tr_back"
+            android:layout_height="match_parent">
+
+        </View>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tv_row_loan_due_pay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:backgroundTint="@color/orange"
+             android:layout_margin="@dimen/_1mdp"
+            android:hint="Pay"
+            android:maxLines="1"
+
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eaeaea" />
+</LinearLayout>

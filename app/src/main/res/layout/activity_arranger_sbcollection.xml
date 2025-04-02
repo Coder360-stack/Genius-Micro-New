@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/notSoWhiteBackground"
+    tools:context=".activities.ArrangerSBCollectionActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/_140mdp"
+        android:background="@color/orange">
+
+        <LinearLayout
+            android:id="@+id/lay_search_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_60mdp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_43mdp"
+                android:layout_marginStart="@dimen/_26mdp"
+                android:background="@drawable/left_round_rec"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/ed_searchtxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="Search....."
+                        android:paddingStart="@dimen/_20mdp" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btn_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.1"
+                    android:background="@color/brown"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="@dimen/_40mdp"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/baseline_search_24" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginVertical="@dimen/_2mdp"
+                android:layout_marginHorizontal="@dimen/_30mdp"
+                android:background="@drawable/left_round_rec"
+                android:layout_height="wrap_content">
+
+                <Spinner
+                    android:id="@+id/sp_searchtxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:paddingStart="@dimen/_20mdp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_360mdp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/_18mdp"
+        android:layout_marginBottom="@dimen/_75mdp">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_60mdp"
+            android:background="@drawable/card_background">
+
+            <LinearLayout
+                android:id="@+id/lay_details"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_50mdp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_3mdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Name : "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12font_mdp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10mdp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:hint="@string/app_name"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12font_mdp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_3mdp"
+                    android:layout_marginVertical="@dimen/_15mdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Account No. : "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12font_mdp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/accno"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10mdp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:hint="0000.0"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12font_mdp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_3mdp"
+                    android:layout_marginBottom="@dimen/_15mdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Opening Balance : "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12font_mdp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/bal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10mdp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:hint="0000.0"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12font_mdp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_3mdp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Enter Amount"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12font_mdp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/ed_bal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8mdp"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:hint="Enter Amount..."
+                            android:maxLength="8"
+                            android:textStyle="bold"
+                            android:padding="@dimen/_4mdp"
+                            android:textSize="@dimen/_15font_mdp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Remarks"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_12font_mdp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/ed_remarks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8mdp"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:gravity="center"
+                            android:hint="Start Typing..."
+                            android:padding="@dimen/_4mdp"
+                            android:textSize="@dimen/_13font_mdp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/_5mdp"
+                android:layout_below="@+id/lay_details"
+                android:layout_height="@dimen/_100mdp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/bottom_bg">
+
+                <!-- Print layout added here - positioned in the middle and above the buttons -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/btn_print"
+                    android:layout_width="@dimen/_110mdp"
+                    android:layout_height="@dimen/_28mdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_above="@+id/btn_deposit"
+                    android:layout_marginBottom="@dimen/_10mdp"
+                    android:clickable="true"
+                    android:layout_marginTop="@dimen/_4mdp"
+                    android:focusable="true"
+                    android:visibility="gone"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="@dimen/_8mdp"
+                    app:cardElevation="@dimen/_4mdp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+
+                        android:layout_height="match_parent"
+                        >
+
+                        <CheckBox
+                            android:id="@+id/print_check"
+                            android:layout_width="match_parent"
+                            android:text="Print"
+                            android:gravity="center"
+
+                            android:paddingStart="2dp"
+                            android:layout_height="match_parent">
+
+                        </CheckBox>
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/btn_deposit"
+                    android:layout_width="@dimen/_110mdp"
+                    android:layout_height="@dimen/_28mdp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_20mdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="@dimen/_8mdp"
+                    app:cardElevation="@dimen/_4mdp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/gradiant_deposite">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="DEPOSIT "
+                            android:textColor="@color/white"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/btn_withdraw"
+                    android:layout_width="@dimen/_110mdp"
+                    android:layout_height="@dimen/_28mdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="@dimen/_20mdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="@dimen/_8mdp"
+                    app:cardElevation="@dimen/_4mdp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/gradiant_withdrawl">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="WITHDRAW "
+                            android:textColor="@color/white"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="@dimen/_100mdp"
+            android:layout_height="@dimen/_100mdp"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/image_border"
+            android:elevation="@dimen/_2mdp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_4mdp"
+                android:src="@drawable/ic_persion" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

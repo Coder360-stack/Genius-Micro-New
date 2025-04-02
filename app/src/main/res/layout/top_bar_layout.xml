@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_50mdp"
+    android:id="@+id/top_lay"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/top_lay_rec"
+    android:orientation="vertical"
+    android:elevation="@dimen/_2mdp">
+
+    <RelativeLayout
+        android:layout_marginHorizontal="@dimen/_5mdp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/_5mdp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/start_img"
+            android:layout_width="@dimen/_32mdp"
+            android:layout_height="@dimen/_32mdp"
+            android:src="@drawable/applogo"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_2mdp"
+            android:background="@android:color/transparent"/>
+        <TextView
+            android:visibility="visible"
+            android:id="@+id/appnametxt"
+            android:scaleType="centerInside"
+            android:layout_marginLeft="@dimen/_7mdp"
+            android:layout_toRightOf="@id/start_img"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_30mdp"
+            android:layout_centerVertical="true"
+            android:text="@string/app_name"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="@dimen/_18mdp"
+            android:textColor="@color/background_blue"
+            />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:id="@+id/btn_admin_dashboard_logout"
+            android:layout_marginStart="@dimen/_7mdp"
+            android:layout_alignParentEnd="true"
+            android:padding="@dimen/_3mdp"
+            android:layout_width="@dimen/_28mdp"
+            android:layout_height="@dimen/_28mdp"
+            android:background="@drawable/circle_bac"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_logout"
+            android:focusable="true" />
+    </RelativeLayout>
+
+</LinearLayout>

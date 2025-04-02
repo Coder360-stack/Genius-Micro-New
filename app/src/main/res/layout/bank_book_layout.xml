@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/_5mdp"
+        android:layout_margin="@dimen/_10mdp"
+        android:background="@drawable/background_gray_radious"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_5mdp"
+            android:layout_height="@dimen/_40mdp"
+            >
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                android:layout_height="wrap_content"
+                android:hint="Total late fine">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_height="wrap_content"
+                android:hint="Mode">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+        <View
+            android:layout_width="@dimen/_200mdp"
+            android:layout_weight="1"
+            android:layout_height="@dimen/_2mdp"
+            android:layout_gravity="center"
+            android:background="@drawable/background_white" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_5mdp"
+            android:layout_height="@dimen/_40mdp">
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                android:layout_height="wrap_content"
+                android:hint="Total late fine">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_height="wrap_content"
+                android:hint="Mode">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_height="wrap_content"
+                android:hint="Mode">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+        <View
+            android:layout_width="@dimen/_200mdp"
+            android:layout_weight="1"
+            android:layout_height="@dimen/_2mdp"
+            android:layout_gravity="center"
+            android:background="@drawable/background_white" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_5mdp"
+            android:layout_height="@dimen/_40mdp"
+            >
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                android:layout_height="wrap_content"
+                android:hint="Total late fine">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_height="wrap_content"
+                android:hint="Mode">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+        <View
+            android:layout_width="@dimen/_200mdp"
+            android:layout_weight="1"
+            android:layout_height="@dimen/_2mdp"
+            android:layout_gravity="center"
+            android:background="@drawable/background_white" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/_5mdp"
+            android:layout_height="@dimen/_40mdp">
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                android:layout_height="wrap_content"
+                android:hint="Total late fine">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_height="wrap_content"
+                android:hint="Mode">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_marginHorizontal="@dimen/_5mdp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColorHint="@color/white"
+                android:layout_height="wrap_content"
+                android:hint="Mode">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:focusable="true"
+                    android:editable="false"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

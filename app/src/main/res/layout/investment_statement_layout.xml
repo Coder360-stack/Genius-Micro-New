@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/_4mdp"
+    app:cardCornerRadius="@dimen/_5mdp"
+    android:backgroundTint="#E2FFFFFF"
+    app:cardElevation="@dimen/_2mdp"
+    android:paddingStart="@dimen/_3mdp"
+    app:cardBackgroundColor="@color/white">
+    <LinearLayout  android:layout_width="match_parent"
+        android:layout_height="120dp"
+
+        android:layout_margin="1dp"
+         android:gravity="center"
+        android:layout_gravity="center"
+
+        android:orientation="vertical"
+       >
+
+
+
+    <!-- Row 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_3mdp"
+        android:layout_marginBottom="4dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PolicyCode - "
+                android:textColor="#8B4513"
+                android:textStyle="bold"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_row_loan_emi_statement_policy_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="PolicyCode"
+                android:textColor="#595959"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="InstNo - "
+                android:textColor="#8B4513"
+                android:textStyle="bold"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_row_loan_emi_statement_InstNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="InstNo"
+                android:textColor="#595959"/>
+        </LinearLayout>
+    </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1mdp"
+            android:background="@color/light_gray2">
+
+        </View>
+
+    <!-- Row 2 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_3mdp"
+        android:layout_marginBottom="4dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DueDate - "
+                android:textColor="#8B4513"
+                android:textStyle="bold"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_row_loan_emi_statement_DueDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="DueDate"
+                android:textSize="@dimen/_10mdp"
+                android:textColor="#595959"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DateofRenewal - "
+                android:textColor="#8B4513"
+                android:textStyle="bold"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_row_loan_emi_statement_DateofRenewal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_10mdp"
+                android:hint="DateofRenewal"
+                android:textColor="#595959"/>
+        </LinearLayout>
+    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1mdp"
+            android:background="@color/light_gray2">
+
+        </View>
+    <!-- Row 3 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_3mdp"
+        android:layout_marginBottom="4dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remarks - "
+                android:textColor="#8B4513"
+                android:textStyle="bold"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_row_loan_emi_statement_remarks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Remarks"
+                android:textColor="#595959"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DueEMINo - "
+                android:textColor="#8B4513"
+                android:textStyle="bold"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_row_loan_emi_statement_due_emi_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="00"
+                android:textColor="#595959"/>
+        </LinearLayout>
+    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1mdp"
+            android:background="@color/light_gray2">
+
+        </View>
+    <!-- Row 4 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/_3mdp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amount - "
+                android:textColor="#8B4513"
+                android:textStyle="bold"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_row_loan_emi_statement_Amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Amount"
+                android:textColor="@color/green"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LateFine - "
+                android:textColor="#8B4513"
+                android:textStyle="bold"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_row_loan_LateFine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="LateFine"
+                android:textColor="#595959"/>
+        </LinearLayout>
+    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1mdp"
+            android:background="@color/light_gray2">
+
+        </View>
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+

@@ -1,0 +1,66 @@
+package com.example.geniousmicro.Adapter;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.geniousmicro.Models.UtilityModels.SBTransactionModel;
+import com.example.geniousmicro.R;
+
+import java.util.ArrayList;
+
+public class SBSummaryDatewiseAdapter extends RecyclerView.Adapter<SBSummaryDatewiseAdapter.SBSummaryViewHolder> {
+
+    ArrayList<SBTransactionModel> list;
+    Context context;
+
+    public SBSummaryDatewiseAdapter(ArrayList<SBTransactionModel> list, Context context) {
+        this.list = list;
+        this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public SBSummaryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(context).inflate(R.layout.sb_tr_layout, parent, false);
+        return new SBSummaryViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull SBSummaryViewHolder holder, int position) {
+        SBTransactionModel model = list.get(position);
+        holder.acccode.setText(model.getAccountCode());
+        holder.name.setText(model.getApplicantName());
+        holder.date.setText(model.getTransactionDate());
+        holder.depositamt.setText(model.getDepositAmount());
+        holder.withdrawamt.setText(model.getWithdrawlAmount());
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    public class SBSummaryViewHolder extends RecyclerView.ViewHolder {
+        TextView acccode, name, date, depositamt, withdrawamt;
+
+        public SBSummaryViewHolder(@NonNull View itemView) {
+            super(itemView);
+            acccode = itemView.findViewById(R.id.acccode);
+            name = itemView.findViewById(R.id.name);
+            date = itemView.findViewById(R.id.date);
+            depositamt = itemView.findViewById(R.id.depositamt);
+            withdrawamt = itemView.findViewById(R.id.withdrawamt);
+        }
+
+
+
+
+    }
+}

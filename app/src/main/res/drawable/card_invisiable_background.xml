@@ -1,0 +1,9 @@
+<!-- res/drawable/card_bg_top_right.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/them_background_light" />
+    <corners
+        android:topRightRadius="8dp"
+        android:topLeftRadius="8dp"
+    android:bottomRightRadius="0dp"
+    android:bottomLeftRadius="0dp" />
+</shape>

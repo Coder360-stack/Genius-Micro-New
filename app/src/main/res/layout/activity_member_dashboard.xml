@@ -1,0 +1,1120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded_corner_background"
+    android:orientation="vertical"
+    tools:context=".activities.MemberDashboardActivity">
+    <!--   <include layout="@layout/custom_toolbar" />-->
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:id="@+id/ll_activity_member_dahsboard_root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/menu"
+                android:layout_margin="@dimen/_5mdp"
+                android:layout_width="@dimen/_30mdp"
+                android:layout_height="@dimen/_30mdp"
+                app:cardCornerRadius="@dimen/_15mdp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/_8mdp"
+                    android:src="@drawable/more" />
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="5dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/imgcard"
+                    android:layout_width="@dimen/_105mdp"
+                    android:layout_height="@dimen/_100mdp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginVertical="@dimen/_5mdp"
+                    android:background="@drawable/circale"
+                    android:backgroundTint="@android:color/transparent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/_8mdp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/applogo" />
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/App_Full_Name"
+                    android:textColor="@color/colorText"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:text="@string/app_name"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_activity_member_dashboard_news"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:hint="News"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="#424D91"
+                android:textColorHint="#1A000000"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="@dimen/_10mdp"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_activity_member_dashboard_welcome_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="@dimen/_14mdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/background_white"
+                        android:ellipsize="marquee"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:text="User name"
+                        android:textColor="@color/colorText"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:layout_width="@dimen/_30mdp"
+                        android:layout_height="@dimen/_30mdp"
+                        android:src="@drawable/logout"
+                        android:id="@+id/logout"/>
+
+                    <LinearLayout
+                        android:id="@+id/ll_activity_member_dashboard_logout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:background="@drawable/background_white"
+                        android:gravity="center"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_logout" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fadeScrollbars="false"
+                    android:scrollbarSize="2dp"
+                    android:scrollbarThumbVertical="@color/colorBlack">
+
+                    <LinearLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/SavingsAccountCard"
+                                android:layout_width="0dp"
+
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:drawableTop="@drawable/ic_check_balance_green"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Savings Account"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </androidx.cardview.widget.CardView>
+
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/InvestmentAccountCard"
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:drawableTop="@drawable/ic_investment_green"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Investment Account"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </androidx.cardview.widget.CardView>
+
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/LoanStatementCard"
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_loan"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Loan Statement"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:visibility="gone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+                                <TextView
+
+                                    android:id="@+id/tv_activity_member_dashboard_loan_payment"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_pay"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Loan Payment"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </androidx.cardview.widget.CardView>
+
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+
+                                    android:id="@+id/tv_activity_member_dashboard_renewal_payment"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_pay"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Renewal Payment"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+                                    android:id="@+id/tv_activity_member_dashboard_investment_calculator"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_calculator"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Investment Calculator"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                android:visibility="gone"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+                                <TextView
+                                    android:id="@+id/policy_list"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_policy"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Policy List"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:visibility="gone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_mobile"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Mobile Recharge"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_dth"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="DTH Recharge"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </androidx.cardview.widget.CardView>
+
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_recharge_datacard"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Broadband Bill"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:visibility="gone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_landline"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Land line Bill "
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </androidx.cardview.widget.CardView>
+
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_electricity"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Electricity Bill"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </androidx.cardview.widget.CardView>
+
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_80mdp"
+                                android:layout_margin="@dimen/_4mdp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="@dimen/_5mdp"
+                                app:cardElevation="@dimen/_5mdp">
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_gas_bill"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Gas Bill"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </androidx.cardview.widget.CardView>
+
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:id="@+id/ll_activity_customer_dashboard_water_bill"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_water"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Water Bill"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:id="@+id/ll_activity_customer_dashboard_PolicyC"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:id="@+id/tv_activity_member_dashboard_policy"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_pay"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Policy"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:id="@+id/tv_activity_arr_policy_investment_investment_calculator"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_calculator"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Investment Calculator"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ll_activity_customer_dashboard_sb_to_sb_transfer"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_transfer"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Transfer LS to LS"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+
+
+                            <LinearLayout
+
+                                android:id="@+id/ll_activity_customer_dashboard_money_transfer"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_money_transfer_new"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Money Transfer"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:id="@+id/ll_activity_customer_dashboard_member_details_update"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:drawableTop="@drawable/ic_update"
+                                    android:drawablePadding="-20sp"
+                                    android:gravity="center"
+                                    android:paddingTop="15dp"
+                                    android:text="Update Details"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:id="@+id/ll_activity_customer_dashboard_update_profile"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:drawableTop="@drawable/ic_profile_big"
+                                        android:drawablePadding="-20sp"
+                                        android:gravity="center"
+                                        android:paddingTop="15dp"
+                                        android:text="Update  Profile"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_activity_member_dashboard_investment_calculator"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1">
+
+
+                                    <LinearLayout
+                                        android:id="@+id/ll_activity_customer_dashboard_plan_details"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:visibility="gone">
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:drawableTop="@drawable/ic_plan"
+                                            android:drawablePadding="-20sp"
+                                            android:gravity="center"
+                                            android:paddingTop="15dp"
+                                            android:text="Investment Plan Details"
+                                            android:textColor="@color/colorBlack"
+                                            android:textSize="13sp"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+
+
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="100dp"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:id="@+id/tv_activity_member_dashboard_policyo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:drawableTop="@drawable/ic_pay"
+                                        android:drawablePadding="-20sp"
+                                        android:gravity="center"
+                                        android:paddingTop="15dp"
+                                        android:text="Policy"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="16sp" />
+
+
+                                    <TextView
+                                        android:id="@+id/tv_activity_member_dashboard_loan"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:drawableTop="@drawable/ic_pay"
+                                        android:drawablePadding="-20sp"
+                                        android:gravity="center"
+                                        android:paddingTop="15dp"
+                                        android:text="Loan"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="16sp" />
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:id="@+id/ll_activity_customer_dashboard_loan_plan_details"
+
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:drawableTop="@drawable/ic_plan"
+                                        android:drawablePadding="-20sp"
+                                        android:gravity="center"
+                                        android:paddingTop="15dp"
+                                        android:text="Loan Plan Details"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="13sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+
+
+                                <LinearLayout
+                                    android:id="@+id/ll_activity_customer_dashboard_contact_us"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:drawableTop="@drawable/ic_contact"
+                                        android:drawablePadding="-20sp"
+                                        android:gravity="center"
+                                        android:paddingTop="15dp"
+                                        android:text="Contact Us"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="16sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/tv_member_dashboard_contact_us"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:drawableTop="@drawable/ic_contact"
+                                android:drawablePadding="-20dp"
+                                android:gravity="center"
+                                android:paddingTop="15dp"
+                                android:text="About US"
+                                android:textColor="@color/colorBlack"
+                                android:visibility="gone" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+
+                </ScrollView>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/login_button"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:gravity="center|end"
+                        android:paddingStart="20dp"
+                        android:paddingLeft="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingRight="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_check_balance" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Savings Account "
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/login_button"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:gravity="center|end"
+                        android:paddingStart="20dp"
+                        android:paddingLeft="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingRight="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_investment" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Investment Account "
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/login_button"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:gravity="center|end"
+                        android:paddingStart="20dp"
+                        android:paddingLeft="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingRight="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_loan_statement" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Loan Statement"
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_activity_customer_dashboard_loan_emi_statement"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/login_button"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:gravity="center|end"
+                        android:paddingStart="20dp"
+                        android:paddingLeft="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingRight="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_loan_emi_statement" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Loan EMI Statement"
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_activity_customer_dashboard_recharge_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/login_button"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:gravity="center|end"
+                        android:paddingStart="20dp"
+                        android:paddingLeft="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingRight="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_recharge" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Recharge Option"
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/login_button"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:gravity="center|end"
+                        android:paddingStart="20dp"
+                        android:paddingLeft="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingRight="20dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_transfer" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Money Transfer"
+                            android:textColor="#ffffff"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_activity_customer_home_menu_developed_by"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/developed_by_genius_technology"
+                android:textColor="@color/colorBlack"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:headerLayout="@layout/side_nav_header"
+            app:itemBackground="@android:color/transparent"
+            app:menu="@menu/drawer_menu_nav_member" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+</LinearLayout>

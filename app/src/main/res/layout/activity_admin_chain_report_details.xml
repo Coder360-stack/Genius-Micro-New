@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.AdminChainReportDetailsActivity"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/custom_toolbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_activity_admin_chain_report_details_from_date"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="From Date"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorBlackHint"/>
+            <Button
+                android:id="@+id/btn_activity_admin_chain_report_details_to_date"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="To Date"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorBlackHint"/>
+
+        </LinearLayout>
+        <Spinner
+            android:id="@+id/sp_activity_arranger_chain_report_details_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:visibility="gone"></Spinner>
+
+        <EditText
+            android:id="@+id/et_admin_chain_report_username"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="Enter Employee code"
+            android:gravity="center"/>
+
+
+        <RadioGroup
+            android:id="@+id/radio_group_admin_chain_report_details"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_admin_chain_report_details_self"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Self"/>
+
+            <RadioButton
+                android:id="@+id/radio_admin_chain_report_details_team"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Team"/>
+
+        </RadioGroup>
+
+
+        <Button
+            android:id="@+id/btn_activity_admin_chain_report_details_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Submit"
+            android:gravity="center"
+            android:layout_gravity="center"
+
+            android:textColor="@color/colorWhite"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorBlack"
+            android:layout_marginTop="5dp"/>
+
+        <LinearLayout
+            android:id="@+id/ll_activity_chain_report_details_rv_toor_deading"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_marginTop="5dp"
+            android:background="#008577">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Code"
+                android:textColor="@color/colorWhite"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Name"
+                android:textColor="@color/colorWhite"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Amount"
+                android:textColor="@color/colorWhite"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_arr_chain_report_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_activity_admin_chain_report_details"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

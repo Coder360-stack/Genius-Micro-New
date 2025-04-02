@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:background="#1b1b1b"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_custom_bottom_sheet_dialog_profile_photo_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Select image"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_custom_bottom_sheet_dialog_select_document_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select document"
+        android:textColor="@color/colorPrimary"/>
+
+    <ImageView
+        android:id="@+id/iv_custom_bottom_sheet_dialog_select_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_camera_white" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Camera"
+        android:textColor="@color/colorPrimary"/>
+
+</LinearLayout>

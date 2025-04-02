@@ -1,3 +1,19 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Genius Micro</string>
+
+    <string name="App_Full_Name">Genius Micro App</string>
+    <string name="Company_Ph_No">6295560763</string>
+    <string name="developed_by_genius_technology">Developed by <b>Genius Technology</b></string>
+
+    <string name="internectconnectionerror">No internet connection.</string>
+    <string name="networkerror">Server error.</string>
+
+    <string name="easyPinMessage">Use this option to create numeric mPIN which you can use to login in Purnoday Nidhi</string>
+    <string name="payunote"><b> Note </b> - You should have an already registered Email ID and Phone number with your  Purnoday Nidhi Limited.</string>
+
+    <string name="total_amount">Total Amount</string>
+    <string name="last_diposit_date">Last Deposit Date</string>
+    <string name="nominee_phone_no">Nominee Phone No  </string>
+    <string name="type_here">Type here</string>
+    <string name="enter_office_name">Select Office Name</string>
 </resources>

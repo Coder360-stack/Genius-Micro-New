@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/collback"
+    tools:context=".activities.GroupCollActivity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GROUP DETAILS"
+        android:layout_marginStart="@dimen/_12mdp"
+        android:layout_marginTop="@dimen/_20mdp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_23font_mdp"
+        android:textStyle="bold"/>
+    <LinearLayout
+        android:id="@+id/lay_search"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_43mdp"
+        android:layout_marginStart="@dimen/_26mdp"
+        android:layout_marginTop="@dimen/_45mdp"
+        android:background="@drawable/left_round_rec"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/ed_searchtxt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Enter GroupCode....."
+                android:paddingStart="@dimen/_20mdp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3.1"
+            android:background="@color/brown"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/_40mdp"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:src="@drawable/baseline_search_24" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+    <View
+        android:layout_width="@dimen/_150mdp"
+        android:layout_height="@dimen/_3mdp"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/_10mdp"
+        android:layout_gravity="center_horizontal"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/group_rec"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="@dimen/_12mdp"
+        tools:listitem="@layout/group_details_lay" />
+
+</LinearLayout>
