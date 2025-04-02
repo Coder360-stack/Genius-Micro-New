@@ -23,9 +23,7 @@ dependencyResolutionManagement {
 
 
 
-<<<<<<< HEAD
 rootProject.name = "My Application Genius"
-=======
-rootProject.name = "My Application"
->>>>>>> a7950c80503642a42f360b8df071c530ae832800
+
+
 include(":app")

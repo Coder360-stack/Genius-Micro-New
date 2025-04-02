@@ -91,7 +91,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View view) {
 
-        if (view == binding.tvAdminDashChainReport) {
+       /* if (view == binding.tvAdminDashChainReport) {
             navigateToNextActivity(AdminDashChainReportActivity.class,"");
         }
         else if (view== binding.tvAdminDashNewRenewReport) {
@@ -109,6 +109,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             Intent intent=new Intent(getApplicationContext(),SavingsCollectionReportActivity.class);
             intent.putExtra("user","Admin");
             startActivity(intent);
+
         }
         else if (view==binding.tvAdminDashMobileCollectionReport) {
             navigateToNextActivity(AdminDashMobileCollectionReportActivity.class,"");
@@ -116,9 +117,9 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         else if (view == binding.AdminChainReport) {
             navigateToNextActivity(AdminChainReportActivity.class,"");
         }
-        /*else if (view == binding.tvAdminDashExecutiveCashSheet) {
+        *//*else if (view == binding.tvAdminDashExecutiveCashSheet) {
             navigateToNextActivity(AdminDashExecutiveCashSheetActivity.class,"");
-        }*/
+        }*//*
         else if (view==binding.tvAdminDashExecutiveBankTransReport) {
             navigateToNextActivity(AdminDashExecutiveBankTransReportActivity.class,"");
         }
@@ -136,7 +137,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         } else if (view==binding.tvDailyCollectionRpt) {
             navigateToNextActivityWithIntentValue(ArrLoanCollReportActivity.class,"AdminArangerWiseReport"); //----use this
         }
-
+*/
 
 
     }
@@ -180,11 +181,11 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
               binding.tvAdminDashNewRenewReport.setOnClickListener(this);
               binding.tvAdminDashExecutiveCollectionReport.setOnClickListener(this);
               binding.tvactivityAdminLoanDueReport.setOnClickListener(this);
-              binding.tvAdminDashAccountSavingsTransReport.setOnClickListener(this);
+            /*  binding.tvAdminDashAccountSavingsTransReport.setOnClickListener(this);
               binding.tvAdminDashMobileCollectionReport.setOnClickListener(this);
               binding.AdminChainReport.setOnClickListener(this);
              // binding.tvAdminDashExecutiveCashSheet.setOnClickListener(this);
-              binding.tvAdminDashExecutiveBankTransReport.setOnClickListener(this);
+              binding.tvAdminDashExecutiveBankTransReport.setOnClickListener(this);*/
               binding.tvDailyCollectionRpt.setOnClickListener(this);
               binding.tvDailyPolicyCollectionRpt.setOnClickListener(this);
               binding.tvAdminApproveLoan.setOnClickListener(this);

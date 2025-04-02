@@ -95,7 +95,6 @@ public class ArrangerMenuAdapter extends BaseAdapter {
                 }
 
 
-
                 else if (menuname.equals("LS Transaction")){
                     Intent intent=new Intent(context, ArrangerSBCollectionActivity.class);
                     context.startActivity(intent);
