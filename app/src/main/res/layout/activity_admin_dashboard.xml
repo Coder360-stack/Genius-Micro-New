@@ -203,6 +203,7 @@
                             app:cardElevation="@dimen/_2mdp">
 
                             <LinearLayout
+                                android:id="@+id/TodayLoanColl"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -524,7 +525,7 @@
         android:visibility="gone"
         app:itemIconTint="@color/selector_color"
         app:itemTextColor="@color/selector_color"
-         android:visibility="gone"
+
         app:menu="@menu/admin_bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

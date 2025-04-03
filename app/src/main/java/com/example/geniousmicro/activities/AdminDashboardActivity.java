@@ -143,6 +143,8 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             intent.putExtra("user","Admin");
             startActivity(intent);
 
+        } else if (view==binding.TodayLoanColl) {
+            navigateToNextActivityWithIntentValue(AdminTodayLoanCollReportActivity.class,"AdminArangerWiseReport"); //----use this
         }
 
 
@@ -200,6 +202,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
               binding.tvDailyPolicyCollectionRpt.setOnClickListener(this);
               binding.tvAdminApproveLoan.setOnClickListener(this);
               binding.tdaysavings.setOnClickListener(this);
+              binding.TodayLoanColl.setOnClickListener(this);
 
 
 

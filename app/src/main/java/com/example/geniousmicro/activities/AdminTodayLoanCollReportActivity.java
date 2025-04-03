@@ -17,16 +17,17 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.geniousmicro.Adapter.SBSummaryDatewiseAdapter;
+import com.example.geniousmicro.Adapter.LoanStatementDatewiseAdapter;
 import com.example.geniousmicro.Data.PostDataParserObjectResponse;
 import com.example.geniousmicro.Data.VolleyCallback;
 import com.example.geniousmicro.MainActivity;
-import com.example.geniousmicro.Models.UtilityModels.SBTransactionModel;
+import com.example.geniousmicro.Models.UtilityModels.LoanStatementDatewiseModel;
 import com.example.geniousmicro.Others.ApiLinks;
 import com.example.geniousmicro.R;
 import com.example.geniousmicro.UserData.GlobalUserData;
-import com.example.geniousmicro.databinding.ActivityAdminTodaySavingsCollectionReportBinding;
-import com.example.geniousmicro.databinding.ActivitySavingsCollectionReportBinding;
+import com.example.geniousmicro.databinding.ActivityAdminLoanCollectionReportBinding;
+import com.example.geniousmicro.databinding.ActivityAdminTodayLoanCollectionReportBinding;
+import com.example.geniousmicro.databinding.ActivityLoanCollectionReportBinding;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -37,8 +38,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class AdminTodaySavingsCollectionReportActivity extends AppCompatActivity {
-    ActivityAdminTodaySavingsCollectionReportBinding binding;
+public class AdminTodayLoanCollReportActivity extends AppCompatActivity {
+     ActivityAdminTodayLoanCollectionReportBinding binding;
     private int fdate = 0;
     private int tdate = 0;
     private String isApproved = "0";
@@ -47,27 +48,22 @@ public class AdminTodaySavingsCollectionReportActivity extends AppCompatActivity
     ArrayList<String> monthlist;
     private Calendar mCalendar;
     String status = "Approved";
-    ArrayList<SBTransactionModel> list;
-    SBSummaryDatewiseAdapter adapter;
-    double depositAmt=0,withdrawAmt=0;
-    String userStatus = "Arranger";
+    ArrayList<LoanStatementDatewiseModel> list;
+    LoanStatementDatewiseAdapter adapter;
+    double TotalAmt=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        binding = ActivityAdminTodaySavingsCollectionReportBinding.inflate(getLayoutInflater());
+        binding = ActivityAdminTodayLoanCollectionReportBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        userStatus = getIntent().getStringExtra("user");
-        if (userStatus.equals("Admin")) {
-            binding.edSearchtxt.setVisibility(View.VISIBLE);
-        } else {
-            binding.edSearchtxt.setVisibility(View.GONE);
-        }
+        binding.EmplyId.setVisibility(View.GONE);
         getLoanCollectionType();
         monthlist = new ArrayList<>();
         monthlist.add("Jan");
@@ -110,69 +106,81 @@ public class AdminTodaySavingsCollectionReportActivity extends AppCompatActivity
             public void onClick(View v) {
                 list = new ArrayList<>();
                 if (fdate != 0 && tdate != 0) {
-                    depositAmt=0;
-                    withdrawAmt=0;
-                    if ((userStatus.equals("Admin") && binding.edSearchtxt.getText().toString().length() > 0) ||
-                            userStatus.equals("Arranger")) {
-                        getSBTrasactionDetails();
-                    } else {
-                        Toast.makeText(AdminTodaySavingsCollectionReportActivity.this, "Enter Details Properly", Toast.LENGTH_SHORT).show();
+                    TotalAmt=0;
+                    Intent intent = getIntent();
+                    if (intent.getStringExtra("LoanCollectionType") != null &&  Objects.equals(intent.getStringExtra("LoanCollectionType"), "AdminArangerWiseReport")) {
+                        //  Log.e("LoanCollectionType", intent.getStringExtra("LoanCollectionType"));
+                        binding.EmplyId.setVisibility(View.VISIBLE);
+                       String EmplyCode= binding.EmplyCode.getText().toString();
+                       if (binding.EmplyCode.getText().toString().isEmpty()){
+                           binding.EmplyCode.setError("Please Enter Employee Code");
+                           Toast.makeText(AdminTodayLoanCollReportActivity.this, "Please Enter Employee Code", Toast.LENGTH_SHORT).show();
+
+                       }else {
+                           getSBTrasactionDetails(EmplyCode);
+                       }
+
+
+
+                    }else {
+                        String EmplyCode= GlobalUserData.employeeDataModel.getEmployeeID();
+                        getSBTrasactionDetails(EmplyCode);
                     }
 
-
                 } else {
-                    Toast.makeText(AdminTodaySavingsCollectionReportActivity.this, "Please Select Dates", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminTodayLoanCollReportActivity.this, "Please Select Dates", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    private void getSBTrasactionDetails() {
-        String id="";
-        if(binding.edSearchtxt.getText().toString().length()>0){
-            id=binding.edSearchtxt.getText().toString();
-        }else{
-            id=GlobalUserData.employeeDataModel.getEmployeeID();
-        }
+    private void getSBTrasactionDetails(String EmplyCode) {
         HashMap<String, String> map = new HashMap<>();
-        map.put("ArrangerCode", id);
+        map.put("ArrangerCode", EmplyCode);
         map.put("FDate", "" + fdate);
         map.put("TDate", "" + tdate);
-        //Log.e("",""+ApiLinks.GET_SBTRANSACTIONDATEWISE+GlobalUserData.employeeDataModel.getEmployeeID()+fdate+tdate);
-
-        new PostDataParserObjectResponse(AdminTodaySavingsCollectionReportActivity.this, ApiLinks.GET_SBTRANSACTIONDATEWISE, map, new VolleyCallback() {
+        Log.d("Report", EmplyCode);
+        Log.d("Report", String.valueOf(fdate));
+        Log.d("Report", String.valueOf(tdate));
+        Log.d("Report", ApiLinks.GET_LOANSUMMARYDATEWISE);
+    ///  Log.e("TEST1",""+ApiLinks.GET_LOANSUMMARYDATEWISE+GlobalUserData.employeeDataModel.getEmployeeID()+fdate+tdate);
+        new PostDataParserObjectResponse(AdminTodayLoanCollReportActivity.this, ApiLinks.GET_LOANSUMMARYDATEWISE, map, new VolleyCallback()
+        {
             @Override
             public void onSuccessResponse(JSONObject result) {
                 try {
-                    JSONArray jsa = result.getJSONArray("AccountDetails");
+                    JSONArray jsa = result.getJSONArray("loanSummary");
+                    Log.e("TEST2",""+jsa);
                     for (int i = 0; i < jsa.length(); i++) {
                         if(jsa.getJSONObject(i).getString("Status").equals(status)) {
                             Gson gson = new Gson();
-                            SBTransactionModel model = gson.fromJson(String.valueOf(jsa.getJSONObject(i)), SBTransactionModel.class);
-
+                            LoanStatementDatewiseModel model = gson.fromJson(String.valueOf(jsa.getJSONObject(i)), LoanStatementDatewiseModel.class);
                             list.add(model);
-                            depositAmt+=jsa.getJSONObject(i).getDouble("DepositAmount");
-                            withdrawAmt+=jsa.getJSONObject(i).getDouble("WithdrawlAmount");
+                            TotalAmt+=jsa.getJSONObject(i).getDouble("EMIAmount");
+                            Log.e("TotalAmt1",""+jsa.getJSONObject(i).getDouble("EMIAmount"));
+
                         }
                         
                     }
                     if (list.size()>0){
-                        adapter=new SBSummaryDatewiseAdapter(list, AdminTodaySavingsCollectionReportActivity.this);
-                        LinearLayoutManager llm=new LinearLayoutManager(AdminTodaySavingsCollectionReportActivity.this);
+                        adapter=new LoanStatementDatewiseAdapter(list, AdminTodayLoanCollReportActivity.this);
+                        LinearLayoutManager llm=new LinearLayoutManager(AdminTodayLoanCollReportActivity.this);
                         llm.setOrientation(RecyclerView.VERTICAL);
                         binding.transRec.setLayoutManager(llm);
                         binding.transRec.setAdapter(adapter);
                         binding.transRec.setVisibility(View.VISIBLE);
-                        binding.totalDepo.setText(""+depositAmt);
-                        binding.totalWith.setText(""+withdrawAmt);
+                        binding.totalDepo.setText(""+TotalAmt);
+                        Log.e("TotalAmt1",""+TotalAmt);
+
+                        // binding.totalWith.setText(""+withdrawAmt);
                     }else{
                         binding.transRec.setVisibility(View.GONE);
                         binding.totalDepo.setText("0");
-                        binding.totalWith.setText("0");
-                        Toast.makeText(AdminTodaySavingsCollectionReportActivity.this, "No Data Fount", Toast.LENGTH_SHORT).show();
+                      //  binding.totalWith.setText("0");
+                        Toast.makeText(AdminTodayLoanCollReportActivity.this, "No Data Found", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
-                    Toast.makeText(AdminTodaySavingsCollectionReportActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminTodayLoanCollReportActivity.this, "Error", Toast.LENGTH_SHORT).show();
                     Log.d("EX", e.toString());
                 }
             }
@@ -183,6 +191,7 @@ public class AdminTodaySavingsCollectionReportActivity extends AppCompatActivity
             }
         });
     }
+
 
     private void selectTDate() {
         Calendar c = Calendar.getInstance();
@@ -239,6 +248,7 @@ public class AdminTodaySavingsCollectionReportActivity extends AppCompatActivity
 
         datePickerDialog.getDatePicker().setMaxDate(mCalendar.getTimeInMillis());
         datePickerDialog.show();
+
     }
 
     private String formatdate(int dayOfMonth) {
@@ -246,9 +256,9 @@ public class AdminTodaySavingsCollectionReportActivity extends AppCompatActivity
     }
     private void  getLoanCollectionType() {
         Intent intent = getIntent();
-       // if (intent.getStringExtra("SBCollectionType") != null &&  Objects.equals(intent.getStringExtra("SBCollectionType"), "Today SBTransaction")){
-            binding.LoanCollectionReport.setText("Today LSTransaction Report");
-         //   binding.DateRange.setVisibility(View.GONE);
+        if (intent.getStringExtra("LoanCollectionType") != null &&  Objects.equals(intent.getStringExtra("LoanCollectionType"), "Today LoanCollection")){
+             binding.LoanCollectionReport.setText("Today Loan Collection Report");
+             binding.DateRange.setVisibility(View.GONE);
 
             Calendar c = Calendar.getInstance();
             mYear = c.get(Calendar.YEAR);
@@ -262,23 +272,33 @@ public class AdminTodaySavingsCollectionReportActivity extends AppCompatActivity
                             String.format("%02d", mDay)
             );
             fdate=tdate;
-            binding.tvTdate.setText(""+tdate);
-            binding.tvFdate.setText(""+tdate);
-
-            binding.tvFdate.setText(""+tdate);
-            binding.tvTdate.setText(""+tdate);
 
 
-       // }
+
+        } else if (intent.getStringExtra("LoanCollectionType") != null &&  Objects.equals(intent.getStringExtra("LoanCollectionType"), "AdminArangerWiseReport")) {
+            Log.e("LoanCollectionType12", intent.getStringExtra("LoanCollectionType"));
+
+            binding.EmplyId.setVisibility(View.VISIBLE);
+         //   binding.EmplyId.setVisibility(View.VISIBLE);
+
+
+
+
+        }
 
 
     }
+
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(getApplicationContext(), AdminDashboardActivity.class));
-        finishAffinity();
-    }
+        //super.onBackPressed();
+        startActivity(new Intent(AdminTodayLoanCollReportActivity.this, AdminDashboardActivity.class));
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
 
+
+
+    }
 
 }
