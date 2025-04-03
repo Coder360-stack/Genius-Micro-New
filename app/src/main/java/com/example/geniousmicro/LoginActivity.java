@@ -58,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Auto Login..", Toast.LENGTH_SHORT).show();
             login(sp.getString(USERNAME,""),sp.getString(PASSWORD,""));
         }
+
         binding.btnlogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,6 +176,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(String error) {
                 // Handle the error response
+                Log.e("Callback Error", error);
                 Log.e("Callback Error", error);
             }
         });

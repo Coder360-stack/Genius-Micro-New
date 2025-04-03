@@ -26,11 +26,15 @@ import com.example.geniousmicro.R;
 import com.example.geniousmicro.UserData.GlobalUserData;
 import com.example.geniousmicro.activities.AgentLoanDueReportDaywise;
 import com.example.geniousmicro.databinding.ActivityLoanCollectionBinding;
+import com.example.geniousmicro.mssql.SqlManager;
 
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -105,6 +109,58 @@ public class LoanCollectionActivity extends AppCompatActivity implements View.On
 
             }
         });
+
+    }
+
+    private void getLoanCodes(String searchValue, String employeeID) {
+        Connection cn = new SqlManager().getSQLConnection();
+        try {
+            if (cn != null) {
+                CallableStatement smt = cn.prepareCall("{call ADROID_GetLoanCodes_BY_CodeOrName(?,?)}");
+                smt.setString("@searchValue",searchValue);
+                smt.setString("@ArrangerCode",employeeID);
+                smt.execute();
+                ResultSet rs = smt.getResultSet();
+                if (rs.isBeforeFirst()){
+                    while (rs.next()) {
+                        accDetailsList.add(new SBDataModel(rs.getString("AccountCode"),
+                                rs.getString("Name"),
+                                rs.getString("Father"),
+                                rs.getString("AccountType"),
+                                rs.getString("AccountBalance")));
+                        accList.add(rs.getString("AccountCode") + " - " + rs.getString("Name"));
+
+                    }
+                    if (accList.size() > 0) {
+                        ArrayAdapter ad
+                                = new ArrayAdapter(
+                                LoanCollectionActivity.this,
+                                android.R.layout.simple_spinner_item,
+                                accList);
+                        ad.setDropDownViewResource(
+                                android.R.layout
+                                        .simple_spinner_dropdown_item);
+
+                        binding.spSearchtxt.setAdapter(ad);
+                        binding.laySearch.getLayoutParams().height = 250;
+                        binding.spSearchtxt.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.spSearchtxt.setVisibility(View.GONE);
+                        Toast.makeText(LoanCollectionActivity.this, "No Data Found", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(LoanCollectionActivity.this, "No Data Found", Toast.LENGTH_SHORT).show();
+                }
+
+            }else{
+                binding.spSearchtxt.setVisibility(View.GONE);
+                Toast.makeText(LoanCollectionActivity.this, "Some Error Occurred", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            binding.spSearchtxt.setVisibility(View.GONE);
+            Toast.makeText(LoanCollectionActivity.this, "Some Error Occurred", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
@@ -183,7 +239,8 @@ public class LoanCollectionActivity extends AppCompatActivity implements View.On
                 accDetailsList = new ArrayList<>();
                 accList.add("~ Select Account ~");
             }
-            getLoanAccountDetails(ApiLinks.GET_LOAN_ACCOUNT_DETAILS, searchValue);
+            //getLoanAccountDetails(ApiLinks.GET_LOAN_ACCOUNT_DETAILS, searchValue);
+            getLoanCodes(searchValue,GlobalUserData.employeeDataModel.getEmployeeID());
         }
         if (view == binding.cBtnView) {
             Double enteredAmount = Double.parseDouble(binding.tilAmount.getEditableText().toString().trim());
