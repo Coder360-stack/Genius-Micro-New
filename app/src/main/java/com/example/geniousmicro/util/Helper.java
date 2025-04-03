@@ -25,8 +25,6 @@ public class Helper {
       // Constants.menuItemList.add(new MenuItemModel("Policy Renewal", R.drawable.policy_renewal));
         Constants.menuItemList.add(new MenuItemModel("Today LoanDue Coll", R.drawable.plan_details));
         Constants.menuItemList.add(new MenuItemModel("Today PolicyDue Coll", R.drawable.plan_details));
-
-
         Constants.menuItemList.add(new MenuItemModel("LS Transaction Report", R.drawable.test1));
         Constants.menuItemList.add(new MenuItemModel("LoanCollection", R.drawable.loan_due_report));
         Constants.menuItemList.add(new MenuItemModel("Policy Collection Report", R.drawable.investment_report));
@@ -35,7 +33,6 @@ public class Helper {
         Constants.menuItemList.add(new MenuItemModel("Group Loan Collection", R.drawable.loan_due_report));
         Constants.menuItemList.add(new MenuItemModel("Group Collection Report", R.drawable.investment_report));
         Constants.menuItemList.add(new MenuItemModel("LoanCollection Manual", R.drawable.investment_report));
-
         Constants.menuItemList.add(new MenuItemModel("PolicyCollection Manual", R.drawable.investment_report));
 
 

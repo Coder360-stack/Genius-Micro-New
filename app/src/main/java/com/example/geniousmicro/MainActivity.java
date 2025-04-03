@@ -158,6 +158,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
+
     private void bindEventHandlers() {
         binding.NewMember.setOnClickListener(this);
         binding.LoanCollection.setOnClickListener(this);

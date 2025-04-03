@@ -41,9 +41,6 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         binding = ActivityAdminDashboardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -84,14 +81,17 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(this, R.color.orange));
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.background_blue));
 
     }
+
+
+
 
     @Override
     public void onClick(View view) {
 
-       /* if (view == binding.tvAdminDashChainReport) {
+        if (view == binding.tvAdminDashChainReport) {
             navigateToNextActivity(AdminDashChainReportActivity.class,"");
         }
         else if (view== binding.tvAdminDashNewRenewReport) {
@@ -110,19 +110,20 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             intent.putExtra("user","Admin");
             startActivity(intent);
 
+
         }
-        else if (view==binding.tvAdminDashMobileCollectionReport) {
+      /*  else if (view==binding.tvAdminDashMobileCollectionReport) {
             navigateToNextActivity(AdminDashMobileCollectionReportActivity.class,"");
         }
         else if (view == binding.AdminChainReport) {
             navigateToNextActivity(AdminChainReportActivity.class,"");
         }
-        *//*else if (view == binding.tvAdminDashExecutiveCashSheet) {
+        else if (view == binding.tvAdminDashExecutiveCashSheet) {
             navigateToNextActivity(AdminDashExecutiveCashSheetActivity.class,"");
-        }*//*
+        }
         else if (view==binding.tvAdminDashExecutiveBankTransReport) {
             navigateToNextActivity(AdminDashExecutiveBankTransReportActivity.class,"");
-        }
+        }*/
 
         else if (view==binding.tvDailyPolicyCollectionRpt) {
 
@@ -136,8 +137,13 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             startActivity(intent);
         } else if (view==binding.tvDailyCollectionRpt) {
             navigateToNextActivityWithIntentValue(ArrLoanCollReportActivity.class,"AdminArangerWiseReport"); //----use this
+        }else if (view==binding.tdaysavings) {
+
+            Intent intent=new Intent(getApplicationContext(),AdminTodaySavingsCollectionReportActivity.class);
+            intent.putExtra("user","Admin");
+            startActivity(intent);
+
         }
-*/
 
 
     }
@@ -159,6 +165,8 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         }
     }
 
+
+
     @Override
     public void onBackPressed() {
         backPressCounter++;
@@ -175,20 +183,23 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
                 }
             }, BACK_PRESS_INTERVAL);
         }
+
+
     }
           private void layoutManagers(){
               binding.tvAdminDashChainReport.setOnClickListener(this);
               binding.tvAdminDashNewRenewReport.setOnClickListener(this);
               binding.tvAdminDashExecutiveCollectionReport.setOnClickListener(this);
               binding.tvactivityAdminLoanDueReport.setOnClickListener(this);
-            /*  binding.tvAdminDashAccountSavingsTransReport.setOnClickListener(this);
-              binding.tvAdminDashMobileCollectionReport.setOnClickListener(this);
+              binding.tvAdminDashAccountSavingsTransReport.setOnClickListener(this);
+             // binding.tvAdminDashMobileCollectionReport.setOnClickListener(this);
               binding.AdminChainReport.setOnClickListener(this);
              // binding.tvAdminDashExecutiveCashSheet.setOnClickListener(this);
-              binding.tvAdminDashExecutiveBankTransReport.setOnClickListener(this);*/
+            //  binding.tvAdminDashExecutiveBankTransReport.setOnClickListener(this);
               binding.tvDailyCollectionRpt.setOnClickListener(this);
               binding.tvDailyPolicyCollectionRpt.setOnClickListener(this);
               binding.tvAdminApproveLoan.setOnClickListener(this);
+              binding.tdaysavings.setOnClickListener(this);
 
 
 

@@ -248,6 +248,7 @@
                             app:cardElevation="@dimen/_2mdp">
 
                             <LinearLayout
+                                android:id="@+id/tvAdminDashAccountSavingsTransReport"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -262,15 +263,17 @@
                                     app:tint="@color/white" />
 
                                 <TextView
-                                    android:id="@+id/tv_admin_dash_chain_report"
+                                    android:id="@+id/tvAdmin_ApproveLoan"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/_8mdp"
                                     android:gravity="center"
-                                    android:text="Chain Report"
+                                    android:text="Savings Collection Report"
                                     android:textColor="@color/white"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
+
+
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
 
@@ -286,6 +289,7 @@
                             app:cardElevation="@dimen/_2mdp">
 
                             <LinearLayout
+                                android:id="@+id/tdaysavings"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -305,10 +309,25 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/_8mdp"
                                     android:gravity="center"
+                                    android:visibility="gone"
                                     android:text="Renew Business"
                                     android:textColor="@color/white"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
+
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_8mdp"
+                                    android:gravity="center"
+                                    android:text="Today Savings Collection"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+
+
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
                     </LinearLayout>
@@ -431,12 +450,12 @@
                                     app:tint="@color/white" />
 
                                 <TextView
-                                    android:id="@+id/tvAdmin_ApproveLoan"
+                                    android:id="@+id/tv_admin_dash_chain_report"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/_8mdp"
                                     android:gravity="center"
-                                    android:text="Savings Collection Report"
+                                    android:text="Chain Report"
                                     android:textColor="@color/white"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
@@ -468,6 +487,8 @@
                                     android:src="@drawable/ic_report"
                                     app:tint="@color/white" />
 
+
+
                                 <TextView
                                     android:id="@+id/AdminChainReport"
                                     android:layout_width="match_parent"
@@ -494,6 +515,7 @@
         android:layout_gravity="bottom"
         android:background="@color/white"
         app:elevation="@dimen/_8mdp"
+        android:visibility="gone"
         app:itemIconTint="@color/selector_color"
         app:itemTextColor="@color/selector_color"
         app:layout_constraintBottom_toBottomOf="parent"

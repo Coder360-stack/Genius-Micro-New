@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.AdminTodaySavingsCollectionReportActivity">
+
+    <include
+        layout="@layout/dual_page_lay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/LoanCollectionReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_9mdp"
+            android:layout_marginTop="@dimen/_12mdp"
+            android:text="LS Transaction Report"
+            android:textAllCaps="true"
+            android:textColor="@color/orange"
+            android:textSize="@dimen/_15font_mdp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="@dimen/_170mdp"
+            android:layout_height="@dimen/_2mdp"
+            android:layout_marginStart="@dimen/_15mdp"
+            android:background="@color/orange" />
+
+        <LinearLayout
+            android:id="@+id/DateRange"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="@dimen/_40mdp"
+            android:layout_marginHorizontal="@dimen/_5mdp"
+            android:layout_marginTop="@dimen/_5mdp">
+
+
+            <TextView
+                android:id="@+id/tv_fdate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/edt_background"
+                android:drawableEnd="@drawable/calendar"
+                android:drawablePadding="@dimen/dimen_4dp"
+                android:gravity="center"
+                android:hint="FROM DATE"
+                android:padding="@dimen/_4mdp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/dimen_3dp"
+                android:layout_weight="1.5"
+                android:background="@drawable/arrow2"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/dimen_5dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_tdate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/edt_background2"
+                android:drawableEnd="@drawable/calendar"
+                android:drawablePadding="@dimen/dimen_4dp"
+                android:gravity="center"
+                android:hint="TO DATE"
+                android:padding="@dimen/_4mdp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_5mdp"
+            android:layout_marginTop="@dimen/_5mdp"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioGroup
+                        android:id="@+id/apprRDgroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/apprbtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/_5mdp"
+                            android:layout_weight="1"
+                            android:background="@drawable/cir_bac2"
+                            android:checked="true"
+                            android:text="Approved"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_11font_mdp"
+                            android:textStyle="bold" />
+
+                        <RadioButton
+                            android:id="@+id/unapprbtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/_5mdp"
+                            android:layout_weight="1"
+                            android:background="@drawable/cir_bac"
+                            android:text="UnApproved"
+                            android:textColor="@color/orange"
+                            android:textSize="@dimen/_11font_mdp"
+                            android:textStyle="bold" />
+
+                    </RadioGroup>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_5mdp"
+                    android:layout_weight="2.5"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/ed_searchtxt"
+                        android:layout_width="0dp"
+
+                        android:layout_height="@dimen/_35mdp"
+                        android:layout_marginVertical="@dimen/_2mdp"
+                        android:layout_weight="1"
+                       android:layout_marginEnd="@dimen/_3mdp"
+                        android:hint="Arranger Id....."
+                        android:paddingStart="@dimen/_20mdp" />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/searchbtn"
+                        android:layout_width="0dp"
+                        android:layout_weight=".5"
+                        android:background="@drawable/cir_bac2"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="Search"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_12mdp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/_5mdp"
+            android:layout_marginTop="@dimen/_10mdp"
+            android:layout_marginBottom="@dimen/_90mdp">
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/cur_lay"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginVertical="@dimen/_3mdp"
+                android:paddingHorizontal="@dimen/_3mdp"
+                android:paddingVertical="@dimen/_5mdp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".9"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/_2mdp"
+                    android:text="Savings ID"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_11font_mdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:text="Name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12font_mdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:text="Date"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12font_mdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Deposit"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12font_mdp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:text="Withdraw"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12font_mdp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/transRec"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/header"
+                android:layout_above="@id/totalheader"
+                android:layout_marginVertical="@dimen/_3mdp"
+                tools:listitem="@layout/sb_tr_layout"
+                android:layout_marginTop="4dp" />
+
+            <LinearLayout
+                android:id="@+id/totalheader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="@dimen/_12font_mdp"
+                    android:text="Total Deposit Amt."/>
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="@dimen/_12font_mdp"
+                    android:text="Total Withdraw Amt."/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/totalDepo"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textSize="@dimen/_12font_mdp"
+                    android:hint="0.0"/>
+                <TextView
+                    android:id="@+id/totalWith"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12font_mdp"
+                    android:hint="0.0"/>
+            </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>
