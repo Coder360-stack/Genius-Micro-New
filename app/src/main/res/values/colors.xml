@@ -102,5 +102,14 @@
     <color name="text_secondary">#78909C</color>
     <color name="card_shadow">#20000000</color>
     <color name="divider">#E0E0E0</color>
+    <!-- Toast message colors -->
+    <color name="toast_success_background">#4CAF50</color>
+    <color name="toast_success_text">#FFFFFF</color>
+    <color name="toast_error_background">#F44336</color>
+    <color name="toast_error_text">#FFFFFF</color>
 
+    <color name="success_color">#4CAF50</color>
+    <color name="error_color">#F44336</color>
+    <color name="warning_color">#FFC107</color>
+    <color name="info_color">#2196F3</color>
 </resources>
