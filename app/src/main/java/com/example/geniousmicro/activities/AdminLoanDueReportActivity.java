@@ -2,6 +2,7 @@ package com.example.geniousmicro.activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.example.geniousmicro.Others.ApiLinks;
 import com.example.geniousmicro.R;
 import com.example.geniousmicro.UserData.GlobalUserData;
 import com.example.geniousmicro.databinding.ActivityAdminDashboardLoandueReportBinding;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -118,7 +120,7 @@ public class AdminLoanDueReportActivity extends AppCompatActivity {
                             Toast.makeText(AdminLoanDueReportActivity.this, "Please Enter Employee Code", Toast.LENGTH_SHORT).show();
 
                         }else {*/
-                            getSBTrasactionDetails(EmplyCode);
+                        getSBTrasactionDetails(EmplyCode);
                         //}
 
 
@@ -129,11 +131,14 @@ public class AdminLoanDueReportActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    Toast.makeText(AdminLoanDueReportActivity.this, "Please Select Dates", Toast.LENGTH_SHORT).show();
+                    showError("Please Select Dates");
+                   // Toast.makeText(AdminLoanDueReportActivity.this, "", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
+
 
     private void getSBTrasactionDetails(String EmplyCode) {
         HashMap<String, String> map = new HashMap<>();
@@ -160,7 +165,7 @@ public class AdminLoanDueReportActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         AdminLoanDueReportModel model = gson.fromJson(String.valueOf(jsa.getJSONObject(i)), AdminLoanDueReportModel.class);
                         list.add(model);
-                       // TotalAmt+=jsa.getJSONObject(i).getDouble("EMIAmount");
+                        // TotalAmt+=jsa.getJSONObject(i).getDouble("EMIAmount");
                        /* Log.e("TotalAmt1",""+jsa.getJSONObject(i).getDouble("EMIAmount"));
 
 
@@ -185,10 +190,12 @@ public class AdminLoanDueReportActivity extends AppCompatActivity {
                       /*  binding.transRec.setVisibility(View.GONE);
                         binding.totalDepo.setText("0");*/
                         //  binding.totalWith.setText("0");
-                        Toast.makeText(AdminLoanDueReportActivity.this, "No Data Found", Toast.LENGTH_SHORT).show();
+
+                       // Toast.makeText(AdminLoanDueReportActivity.this, "", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
-                    Toast.makeText(AdminLoanDueReportActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                    showError("No Data Found");
+                   // Toast.makeText(AdminLoanDueReportActivity.this, "Error", Toast.LENGTH_SHORT).show();
                     Log.d("EX", e.toString());
                 }
             }
@@ -228,6 +235,19 @@ public class AdminLoanDueReportActivity extends AppCompatActivity {
         datePickerDialog.getDatePicker().setMaxDate(mCalendar.getTimeInMillis());
         datePickerDialog.show();
 
+    }
+    private void showSuccess(String message) {
+        Snackbar.make(findViewById(R.id.main), message, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getResources().getColor(R.color.success_color))
+                .setTextColor(Color.WHITE)
+                .show();
+    }
+
+    private void showError(String message) {
+        Snackbar.make(findViewById(R.id.main), message, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getResources().getColor(R.color.error_color))
+                .setTextColor(Color.WHITE)
+                .show();
     }
 
     private void selectFDate() {

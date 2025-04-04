@@ -1,8 +1,15 @@
 package com.example.geniousmicro.activities;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.geniousmicro.Adapter.AdminLoanDueReportAdapter;
+import com.example.geniousmicro.Models.UtilityModels.AdminLoanDueReportModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -17,6 +24,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import android.content.Context;
 import android.content.Intent;
@@ -24,14 +32,20 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -51,9 +65,11 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminDashboardActivity extends AppCompatActivity implements View.OnClickListener {
     private BarChart barChart;
@@ -86,12 +102,41 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
     String SHARED_PREF_NAME="UserDetails";
     String USERNAME="UserName";
     String PASSWORD="Password";
+    RadioGroup chartTypeGroup;
+    CardView BarChartCard,PieChartCard;
+    LinearLayout Fromdate,Todate;
+    RadioButton barChartButton,pieChartButton;
+
+
+
+
+    private int fdate = 0;
+    private int tdate = 0;
+    private String isApproved = "0";
+    int mYear, mMonth, mDay;
+    private int currentDay, currentMonth, currentYear;
+    ArrayList<String> monthlist;
+    private Calendar mCalendar;
+    String status = "Approved";
+
+    double TotalAmt=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         binding = ActivityAdminDashboardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+         chartTypeGroup = findViewById(R.id.chartTypeGroup);  // Assuming you've assigned an ID to your RadioGroup
+         barChartButton = findViewById(R.id.Btn_BarChart);
+         pieChartButton = findViewById(R.id.Btn_PieChart);
+        BarChartCard=findViewById(R.id.BarChartCard);
+        PieChartCard=findViewById(R.id.PieChartCard);
+        Fromdate=findViewById(R.id.fromDateLinear);
+        Todate=findViewById(R.id.toDateLinear);
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -105,6 +150,24 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         // Initialize charts
         barChart = findViewById(R.id.barChart);
         pieChart = findViewById(R.id.pieChart);
+
+
+
+        Fromdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectFDate();
+
+            }
+        });
+
+        Todate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectTDate();
+
+            }
+        });
 
         // Set up the bar chart
         setupBarChart();
@@ -133,7 +196,20 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         StatusbarColor();
 
 
-
+        chartTypeGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                if (checkedId==R.id.Btn_BarChart){
+                    BarChartCard.setVisibility(VISIBLE);
+                    PieChartCard.setVisibility(GONE);
+                   // Toast.makeText(AdminDashboardActivity.this, "Bar Chart selected1", Toast.LENGTH_SHORT).show();
+                } else if (checkedId==R.id.Btn_PieChart) {
+                     PieChartCard.setVisibility(VISIBLE);
+                    BarChartCard.setVisibility(GONE);
+                    //Toast.makeText(AdminDashboardActivity.this, "Bar Chart selected12", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 
@@ -265,6 +341,8 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
               binding.tvAdminApproveLoan.setOnClickListener(this);
               binding.tdaysavings.setOnClickListener(this);
               binding.TodayLoanColl.setOnClickListener(this);
+              Fromdate.setOnClickListener(this);
+              Todate.setOnClickListener(this);
 
 
 
@@ -325,17 +403,14 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
 
         // Create a data set and customize it
         PieDataSet dataSet = new PieDataSet(entries, "Financial Data");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataSet.setValueTextSize(12f);
 
-        // Create custom color list
-        List<Integer> colors = new ArrayList<>();
-        colors.add(Color.rgb(64, 89, 128));
-        colors.add(Color.rgb(149, 165, 124));
-        colors.add(Color.rgb(217, 184, 162));
-        colors.add(Color.rgb(191, 134, 134));
-        colors.add(Color.rgb(179, 48, 80));
-        colors.add(Color.rgb(93, 35, 71));
 
-        dataSet.setColors(colors);
+
+
+
+      //  dataSet.setColors(colors);
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
         dataSet.setValueTextSize(12f);
@@ -358,4 +433,86 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         pieChart.invalidate();
     }
 
+
+
+    private void selectTDate() {
+        Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        // Calendar
+        mCalendar = Calendar.getInstance();
+        currentDay = mCalendar.get(Calendar.DAY_OF_MONTH);
+        currentMonth = mCalendar.get(Calendar.MONTH);
+        currentYear = mCalendar.get(Calendar.YEAR);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month += 1;
+
+                binding.toDateText.setText(formatdate(dayOfMonth) + "-" + monthlist.get(month - 1) + "-" + year);
+                tdate = Integer.parseInt(Integer.toString(year) + String.format("%02d", month) + String.format("%02d", dayOfMonth));
+//                getMemberDetails("all", "k");
+            }
+        }, currentYear, currentMonth, currentDay);
+        mCalendar.set(currentYear, currentMonth, currentDay);
+
+        datePickerDialog.getDatePicker().setMaxDate(mCalendar.getTimeInMillis());
+        datePickerDialog.show();
+
     }
+    private void showSuccess(String message) {
+        Snackbar.make(findViewById(R.id.main), message, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getResources().getColor(R.color.success_color))
+                .setTextColor(Color.WHITE)
+                .show();
+    }
+
+    private void showError(String message) {
+        Snackbar.make(findViewById(R.id.main), message, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getResources().getColor(R.color.error_color))
+                .setTextColor(Color.WHITE)
+                .show();
+    }
+
+    private void selectFDate() {
+        Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        // Calendar
+        mCalendar = Calendar.getInstance();
+        currentDay = mCalendar.get(Calendar.DAY_OF_MONTH);
+        currentMonth = mCalendar.get(Calendar.MONTH);
+        currentYear = mCalendar.get(Calendar.YEAR);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month += 1;
+
+                binding.fromDateText.setText(formatdate(dayOfMonth) + "-" + monthlist.get(month - 1) + "-" + year);
+                fdate = Integer.parseInt(Integer.toString(year) + String.format("%02d", month) + String.format("%02d", dayOfMonth));
+//                getMemberDetails("all", "k");
+            }
+        }, currentYear, currentMonth, currentDay);
+        mCalendar.set(currentYear, currentMonth, currentDay);
+
+        datePickerDialog.getDatePicker().setMaxDate(mCalendar.getTimeInMillis());
+        datePickerDialog.show();
+
+    }
+
+    private String formatdate(int dayOfMonth) {
+        return dayOfMonth < 10 ? "0" + dayOfMonth : "" + dayOfMonth;
+    }
+
+
+
+    }
+
+
+
