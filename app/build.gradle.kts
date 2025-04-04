@@ -75,6 +75,8 @@ dependencies {
 
     implementation ("com.github.CanHub:Android-Image-Cropper:3.1.3")
 
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 
 
 }

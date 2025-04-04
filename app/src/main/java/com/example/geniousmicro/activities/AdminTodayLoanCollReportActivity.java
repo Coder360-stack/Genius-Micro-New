@@ -63,7 +63,7 @@ public class AdminTodayLoanCollReportActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        binding.EmplyId.setVisibility(View.GONE);
+       // binding.EmplyId.setVisibility(View.GONE);
         getLoanCollectionType();
         monthlist = new ArrayList<>();
         monthlist.add("Jan");
@@ -134,6 +134,8 @@ public class AdminTodayLoanCollReportActivity extends AppCompatActivity {
         });
     }
 
+
+
     private void getSBTrasactionDetails(String EmplyCode) {
         HashMap<String, String> map = new HashMap<>();
         map.put("ArrangerCode", EmplyCode);
@@ -146,6 +148,7 @@ public class AdminTodayLoanCollReportActivity extends AppCompatActivity {
     ///  Log.e("TEST1",""+ApiLinks.GET_LOANSUMMARYDATEWISE+GlobalUserData.employeeDataModel.getEmployeeID()+fdate+tdate);
         new PostDataParserObjectResponse(AdminTodayLoanCollReportActivity.this, ApiLinks.GET_LOANSUMMARYDATEWISE, map, new VolleyCallback()
         {
+
             @Override
             public void onSuccessResponse(JSONObject result) {
                 try {
@@ -220,6 +223,7 @@ public class AdminTodayLoanCollReportActivity extends AppCompatActivity {
         datePickerDialog.getDatePicker().setMaxDate(mCalendar.getTimeInMillis());
         datePickerDialog.show();
 
+
     }
 
     private void selectFDate() {
@@ -239,7 +243,7 @@ public class AdminTodayLoanCollReportActivity extends AppCompatActivity {
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 month += 1;
 
-                binding.tvFdate.setText(formatdate(dayOfMonth) + "-" + monthlist.get(month - 1) + "-" + year);
+                binding.tvFdate.setText(formatdate(dayOfMonth) + "-" + monthlist.get(month ) + "-" + year);
                 fdate = Integer.parseInt(Integer.toString(year) + String.format("%02d", month) + String.format("%02d", dayOfMonth));
 //                getMemberDetails("all", "k");
             }
@@ -255,10 +259,10 @@ public class AdminTodayLoanCollReportActivity extends AppCompatActivity {
         return dayOfMonth < 10 ? "0" + dayOfMonth : "" + dayOfMonth;
     }
     private void  getLoanCollectionType() {
-        Intent intent = getIntent();
-        if (intent.getStringExtra("LoanCollectionType") != null &&  Objects.equals(intent.getStringExtra("LoanCollectionType"), "Today LoanCollection")){
+
+
              binding.LoanCollectionReport.setText("Today Loan Collection Report");
-             binding.DateRange.setVisibility(View.GONE);
+           //  binding.DateRange.setVisibility(View.GONE);
 
             Calendar c = Calendar.getInstance();
             mYear = c.get(Calendar.YEAR);
@@ -273,18 +277,12 @@ public class AdminTodayLoanCollReportActivity extends AppCompatActivity {
             );
             fdate=tdate;
 
-
-
-        } else if (intent.getStringExtra("LoanCollectionType") != null &&  Objects.equals(intent.getStringExtra("LoanCollectionType"), "AdminArangerWiseReport")) {
-            Log.e("LoanCollectionType12", intent.getStringExtra("LoanCollectionType"));
-
-            binding.EmplyId.setVisibility(View.VISIBLE);
-         //   binding.EmplyId.setVisibility(View.VISIBLE);
+            binding.tvFdate.setText(""+fdate);
+            binding.tvTdate.setText(""+fdate);
 
 
 
 
-        }
 
 
     }

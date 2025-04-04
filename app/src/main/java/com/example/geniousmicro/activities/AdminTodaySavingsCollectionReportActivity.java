@@ -265,8 +265,7 @@ public class AdminTodaySavingsCollectionReportActivity extends AppCompatActivity
             binding.tvTdate.setText(""+tdate);
             binding.tvFdate.setText(""+tdate);
 
-            binding.tvFdate.setText(""+tdate);
-            binding.tvTdate.setText(""+tdate);
+
 
 
        // }

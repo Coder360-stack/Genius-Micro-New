@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_9mdp"
             android:layout_marginTop="@dimen/_12mdp"
-            android:text="Loan Collection Report"
+            android:text="Today Loan Collection"
             android:textAllCaps="true"
             android:textColor="@color/orange"
             android:textSize="@dimen/_15font_mdp"
@@ -45,6 +45,7 @@
         <LinearLayout
             android:id="@+id/DateRange"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="@dimen/_40mdp"
             android:layout_marginHorizontal="@dimen/_5mdp"
             android:layout_marginTop="@dimen/_20mdp">
