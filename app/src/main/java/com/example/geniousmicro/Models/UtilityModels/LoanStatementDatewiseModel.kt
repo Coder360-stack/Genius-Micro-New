@@ -1,9 +1,6 @@
 package com.example.geniousmicro.Models.UtilityModels
 
 data class LoanStatementDatewiseModel(
-
-
-
     var LoanCode:String,
     var UserName:String,
     var EMIAmount:String,

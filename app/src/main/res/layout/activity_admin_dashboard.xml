@@ -496,6 +496,7 @@
                             app:cardElevation="@dimen/_2mdp">
 
                             <LinearLayout
+                                android:id="@+id/empdetails"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -509,15 +510,13 @@
                                     android:src="@drawable/ic_report"
                                     app:tint="@color/white" />
 
-
-
                                 <TextView
                                     android:id="@+id/AdminChainReport"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/_8mdp"
                                     android:gravity="center"
-                                    android:text=""
+                                    android:text="Employee Details"
                                     android:textColor="@color/white"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
