@@ -444,6 +444,8 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
 
         } else if (view==binding.TodayLoanColl) {
             navigateToNextActivityWithIntentValue(AdminTodayLoanCollReportActivity.class,"AdminArangerWiseReport"); //----use this
+        }else if (view==binding.empdetails) {
+            navigateToNextActivityWithIntentValue(AdminTodayLoanCollReportActivity.class,"AdminArangerWiseReport"); //----use this
         }
 
 
@@ -505,6 +507,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
               Fromdate.setOnClickListener(this);
               Todate.setOnClickListener(this);
               binding.applyFilterButton.setOnClickListener(this);
+              binding.empdetails.setOnClickListener(this);
 
 
 
