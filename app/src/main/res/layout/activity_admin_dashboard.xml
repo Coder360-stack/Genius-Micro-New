@@ -122,7 +122,6 @@
             <!-- Dashboard Content Card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/admindetailscard"
-                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_16mdp"
@@ -549,13 +548,13 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/_16mdp"
                         android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
                         android:text="Financial Dashboard"
                         android:textColor="#1F2937"
                         android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginBottom="@dimen/_16mdp" />
+                        android:textStyle="bold" />
 
                     <!-- Date Range and Filter Card -->
                     <androidx.cardview.widget.CardView
@@ -574,11 +573,11 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_8mdp"
                                 android:text="Select Date Range"
                                 android:textColor="#4B5563"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_marginBottom="@dimen/_8mdp" />
+                                android:textStyle="bold" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -590,8 +589,8 @@
                                 <androidx.cardview.widget.CardView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
                                     android:layout_marginEnd="@dimen/_4mdp"
+                                    android:layout_weight="1"
                                     app:cardCornerRadius="@dimen/_8mdp"
                                     app:cardElevation="@dimen/_1mdp">
 
@@ -625,8 +624,8 @@
                                 <androidx.cardview.widget.CardView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
                                     android:layout_marginHorizontal="@dimen/_4mdp"
+                                    android:layout_weight="1"
                                     app:cardCornerRadius="@dimen/_8mdp"
                                     app:cardElevation="@dimen/_1mdp">
 
@@ -659,8 +658,8 @@
                                 <androidx.cardview.widget.CardView
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
                                     android:layout_marginStart="@dimen/_4mdp"
+                                    android:layout_weight="1"
                                     app:cardCornerRadius="@dimen/_8mdp"
                                     app:cardElevation="@dimen/_1mdp">
 
@@ -673,8 +672,8 @@
                                         <TextView
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:text="Office"
                                             android:gravity="center"
+                                            android:text="Office"
                                             android:textColor="#4B5563"
                                             android:textSize="12sp" />
 
@@ -690,33 +689,35 @@
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:orientation="horizontal"
+                                android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/_8mdp"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
+
                                 <RadioGroup
                                     android:id="@+id/chartTypeGroup"
                                     android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center"
                                     android:layout_margin="@dimen/_4mdp"
-                                    android:orientation="vertical"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1">
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
                                     <RadioButton
                                         android:id="@+id/Btn_BarChart"
                                         android:layout_width="wrap_content"
-                                        android:textSize="12sp"
-                                        android:checked="true"
-                                        android:layout_gravity="center"
                                         android:layout_height="wrap_content"
-                                        android:text="BarChart" />
+                                        android:layout_gravity="center"
+                                        android:checked="true"
+                                        android:text="BarChart"
+                                        android:textSize="12sp" />
 
                                     <RadioButton
                                         android:id="@+id/Btn_PieChart"
                                         android:layout_width="wrap_content"
-                                        android:textSize="12sp"
-                                        android:layout_gravity="center"
                                         android:layout_height="wrap_content"
-                                        android:text="PieChart" />
+                                        android:layout_gravity="center"
+                                        android:text="PieChart"
+                                        android:textSize="12sp" />
 
                                 </RadioGroup>
 
@@ -724,9 +725,9 @@
                                     android:id="@+id/applyFilterButton"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:layout_margin="@dimen/_4mdp"
                                     android:layout_gravity="center"
+                                    android:layout_margin="@dimen/_4mdp"
+                                    android:layout_weight="1"
 
                                     android:backgroundTint="#4F46E5"
                                     android:text="Apply Filters"
@@ -736,7 +737,6 @@
 
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
-
 
 
                     <!-- Bar Chart Card -->
@@ -757,11 +757,11 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_8mdp"
                                 android:text="Monthly Revenue"
                                 android:textColor="#1F2937"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_marginBottom="@dimen/_8mdp" />
+                                android:textStyle="bold" />
 
                             <com.github.mikephil.charting.charts.BarChart
                                 android:id="@+id/barChart"
@@ -777,156 +777,156 @@
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginBottom="8dp"
+                                    android:gravity="center"
                                     android:text="Financial Indicators"
                                     android:textSize="12sp"
-                                    android:textStyle="bold"
-                                    android:gravity="center"
-                                    android:layout_marginBottom="8dp"/>
+                                    android:textStyle="bold" />
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:gravity="center_vertical">
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
 
                                     <!-- Total Share -->
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="2dp"
                                         android:layout_weight="1"
-                                        android:orientation="horizontal"
                                         android:gravity="center_vertical"
-                                        android:layout_margin="2dp">
+                                        android:orientation="horizontal">
 
                                         <View
                                             android:layout_width="10dp"
                                             android:layout_height="10dp"
-                                            android:background="#2ecc71"/>
+                                            android:background="#2ecc71" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_marginStart="2dp"
                                             android:text="Total Share"
-                                            android:textSize="8sp"
-                                            android:layout_marginStart="2dp"/>
+                                            android:textSize="8sp" />
                                     </LinearLayout>
 
                                     <!-- Total Policy -->
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="2dp"
                                         android:layout_weight="1"
-                                        android:orientation="horizontal"
                                         android:gravity="center_vertical"
-                                        android:layout_margin="2dp">
+                                        android:orientation="horizontal">
 
                                         <View
                                             android:layout_width="10dp"
                                             android:layout_height="10dp"
-                                            android:background="#f1c40f"/>
+                                            android:background="#f1c40f" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_marginStart="2dp"
                                             android:text="Total Policy"
-                                            android:textSize="8sp"
-                                            android:layout_marginStart="2dp"/>
+                                            android:textSize="8sp" />
                                     </LinearLayout>
 
                                     <!-- Loan Rec -->
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="2dp"
                                         android:layout_weight="1"
-                                        android:orientation="horizontal"
                                         android:gravity="center_vertical"
-                                        android:layout_margin="2dp">
+                                        android:orientation="horizontal">
 
                                         <View
                                             android:layout_width="10dp"
                                             android:layout_height="10dp"
-                                            android:background="#e74c3c"/>
+                                            android:background="#e74c3c" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_marginStart="2dp"
                                             android:text="Loan Rec"
-                                            android:textSize="8sp"
-                                            android:layout_marginStart="2dp"/>
+                                            android:textSize="8sp" />
                                     </LinearLayout>
                                 </LinearLayout>
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
                                     android:layout_marginTop="4dp"
-                                    android:gravity="center_vertical">
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
 
                                     <!-- SB Deposit -->
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="2dp"
                                         android:layout_weight="1"
-                                        android:orientation="horizontal"
                                         android:gravity="center_vertical"
-                                        android:layout_margin="2dp">
+                                        android:orientation="horizontal">
 
                                         <View
                                             android:layout_width="10dp"
                                             android:layout_height="10dp"
-                                            android:background="#3498db"/>
+                                            android:background="#3498db" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_marginStart="2dp"
                                             android:text="SB Deposit"
-                                            android:textSize="8sp"
-                                            android:layout_marginStart="2dp"/>
+                                            android:textSize="8sp" />
                                     </LinearLayout>
 
                                     <!-- Service Tax -->
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="2dp"
                                         android:layout_weight="1"
-                                        android:orientation="horizontal"
                                         android:gravity="center_vertical"
-                                        android:layout_margin="2dp">
+                                        android:orientation="horizontal">
 
                                         <View
                                             android:layout_width="10dp"
                                             android:layout_height="10dp"
-                                            android:background="#2ecc71"/>
+                                            android:background="#2ecc71" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_marginStart="2dp"
                                             android:text="Service Tax"
-                                            android:textSize="8sp"
-                                            android:layout_marginStart="2dp"/>
+                                            android:textSize="8sp" />
                                     </LinearLayout>
 
                                     <!-- Processing Fees -->
                                     <LinearLayout
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
+                                        android:layout_margin="2dp"
                                         android:layout_weight="1"
-                                        android:orientation="horizontal"
                                         android:gravity="center_vertical"
-                                        android:layout_margin="2dp">
+                                        android:orientation="horizontal">
 
                                         <View
                                             android:layout_width="10dp"
                                             android:layout_height="10dp"
-                                            android:background="#f1c40f"/>
+                                            android:background="#f1c40f" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:layout_marginStart="2dp"
                                             android:text="Proc. Fees"
-                                            android:textSize="8sp"
-                                            android:layout_marginStart="2dp"/>
+                                            android:textSize="8sp" />
                                     </LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>
@@ -937,9 +937,9 @@
                     <!-- Pie Chart Card -->
                     <androidx.cardview.widget.CardView
                         android:id="@+id/PieChartCard"
-                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         app:cardCornerRadius="@dimen/_12mdp"
                         app:cardElevation="@dimen/_3mdp">
 
@@ -952,11 +952,11 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_8mdp"
                                 android:text="Expense Distribution"
                                 android:textColor="#1F2937"
                                 android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_marginBottom="@dimen/_8mdp" />
+                                android:textStyle="bold" />
 
                             <com.github.mikephil.charting.charts.PieChart
                                 android:id="@+id/pieChart"

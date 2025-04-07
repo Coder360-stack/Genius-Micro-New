@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.geniousmicro.Adapter.AdminLoanDueReportAdapter;
 import com.example.geniousmicro.Models.UtilityModels.AdminLoanDueReportModel;
+import com.example.geniousmicro.UserData.GlobalUserData;
+import com.example.geniousmicro.mssql.SqlManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -22,6 +24,9 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -36,6 +41,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -74,6 +81,7 @@ import java.util.Objects;
 public class AdminDashboardActivity extends AppCompatActivity implements View.OnClickListener {
     private BarChart barChart;
     private PieChart pieChart;
+    private String St_OfficeCode="";
 
     // Financial data
     private final float totalShare = 1200f;
@@ -82,6 +90,9 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
     private final float sbDeposit = 7452f;
     private final float serviceTax = 6565f;
     private final float processingFees = 3458f;
+    private  ArrayList<String> officecode=new ArrayList<>();
+    private  ArrayList<String> officnamewithcode=new ArrayList<>();
+
 
     // Labels for the financial data
     private final String[] labels = new String[] {
@@ -127,7 +138,11 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         EdgeToEdge.enable(this);
         binding = ActivityAdminDashboardBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
          chartTypeGroup = findViewById(R.id.chartTypeGroup);  // Assuming you've assigned an ID to your RadioGroup
          barChartButton = findViewById(R.id.Btn_BarChart);
@@ -136,23 +151,33 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         PieChartCard=findViewById(R.id.PieChartCard);
         Fromdate=findViewById(R.id.fromDateLinear);
         Todate=findViewById(R.id.toDateLinear);
+        monthlist = new ArrayList<>();
+        monthlist.add("Jan");
+        monthlist.add("Feb");
+        monthlist.add("Mar");
+        monthlist.add("Apr");
+        monthlist.add("May");
+        monthlist.add("Jun");
+        monthlist.add("Jul");
+        monthlist.add("Aug");
+        monthlist.add("Sep");
+        monthlist.add("Oct");
+        monthlist.add("Nov");
+        monthlist.add("Dec");
 
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
         sp=getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         editor=sp.edit();
         layoutManagers();
+
 
         // Initialize charts
         barChart = findViewById(R.id.barChart);
         pieChart = findViewById(R.id.pieChart);
 
 
-
+        getOfficeDetails();
+        CurrentDate();
         Fromdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,11 +194,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             }
         });
 
-        // Set up the bar chart
-        setupBarChart();
 
-        // Set up the pie chart
-        setupPieChart();
         binding.logoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,6 +214,15 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         });
 
 
+        binding.applyFilterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                GetBarChartDetails(fdate,tdate,St_OfficeCode);
+
+            }
+        });
+
         StatusbarColor();
 
 
@@ -211,6 +241,103 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             }
         });
 
+
+
+
+
+
+        ///nomine type
+
+
+
+        ArrayAdapter<String> mnonie_type_adpater = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, officnamewithcode);
+        mnonie_type_adpater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.officeSpinner.setAdapter(mnonie_type_adpater);
+        binding.officeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                St_OfficeCode = officecode.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
+    }
+
+    private void CurrentDate() {
+
+        Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        // Set tdate as today's date by default
+
+      String TodayDate= String.valueOf(Integer.toString(mYear) +"/"+ String.format("%02d", mMonth + 1) +"/"+ String.format("%02d", mDay)) ;
+
+
+        tdate = Integer.parseInt(
+                Integer.toString(mYear) +
+                        String.format("%02d", mMonth + 1) +
+                        String.format("%02d", mDay)
+        );
+        fdate=tdate;
+        binding.fromDateText.setText(""+TodayDate);
+        binding.toDateText.setText(""+TodayDate);
+
+         GetBarChartDetails(fdate,tdate,"0");
+
+
+    }
+
+    private void GetBarChartDetails(int fromdate,int todate,String Officedate ) {
+
+        Connection cn = new SqlManager().getSQLConnection();
+        try {
+            if (cn != null) {
+                CallableStatement smt = cn.prepareCall("{call ADROID_GET_BUSINESS_SUMMARY(?,?,?,?)}");
+                smt.setString("@SEARCH_TYPE", "TILLDATE");
+                smt.setString("@OFFICEID", Officedate);
+                smt.setInt("@FROMDATE", fromdate);
+                smt.setInt("@TODATE", todate);
+
+                smt.execute();
+                ResultSet rs = smt.getResultSet();
+                if (rs.isBeforeFirst()){
+                    while (rs.next()) {
+
+                        Float TOTALSHARE = Float.valueOf((rs.getString("TOTALSHARE")));
+                        Float TOTALPOLICY = Float.valueOf((rs.getString("TOTALPOLICY")));
+                        Float LOANREC = Float.valueOf((rs.getString("LOANREC")));
+                        Float SBDEPOSIT = Float.valueOf(rs.getString("SBDEPOSIT"));
+                        Float SERVICETAX = Float.valueOf(rs.getString("SERVICETAX"));
+                        Float PROCESSINGFEES = Float.valueOf(rs.getString("PROCESSINGFEES"));
+                        Log.e("PROCESSINGFEES",""+PROCESSINGFEES);
+                        // Set up the bar chart
+                        setupBarChart(TOTALSHARE,TOTALPOLICY,LOANREC,SBDEPOSIT,SERVICETAX,PROCESSINGFEES);
+
+
+                        // Set up the pie chart
+                        setupPieChart(TOTALSHARE,TOTALPOLICY,LOANREC,SBDEPOSIT,SERVICETAX,PROCESSINGFEES);
+
+                    }
+                }else{
+                    Toast.makeText(AdminDashboardActivity.this,"No Data Found",Toast.LENGTH_LONG).show();
+                }
+
+            }else{
+                Log.d("bbc", "Error ");
+            }
+        } catch (Exception e) {
+
+            Log.d("bbc", ""+e);
+        }
+
     }
 
     private void StatusbarColor() {
@@ -222,6 +349,40 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
     }
 
 
+    private void getOfficeDetails() {
+        officnamewithcode.add("All");
+        officecode.add("0");
+
+        Connection cn = new SqlManager().getSQLConnection();
+        try {
+            if (cn != null) {
+                CallableStatement smt = cn.prepareCall("{call ADROID_GET_Office()}");
+                smt.execute();
+                ResultSet rs = smt.getResultSet();
+                if (rs.isBeforeFirst()){
+                    while (rs.next()) {
+
+
+                        officecode.add(rs.getString("OfficeID"));
+                        officnamewithcode.add(rs.getString("OfficeID")+"-"+rs.getString("OfficeName"));
+
+
+
+                    }
+                }else{
+                    //Toast.makeText(AdminDashboardActivity.this,"No Data Found",Toast.LENGTH_LONG).show();
+                }
+
+            }else{
+                Log.d("bbc", "Error ");
+            }
+        } catch (Exception e) {
+
+            Log.d("bbc", ""+e);
+        }
+
+
+    }
 
 
     @Override
@@ -343,21 +504,22 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
               binding.TodayLoanColl.setOnClickListener(this);
               Fromdate.setOnClickListener(this);
               Todate.setOnClickListener(this);
+              binding.applyFilterButton.setOnClickListener(this);
 
 
 
 
           }
 
-    private void setupBarChart() {
+    private void setupBarChart(Float TOTALSHARE,Float TOTALPOLICY,Float LOANREC,Float SBDEPOSIT,Float SERVICETAX,Float PROCESSINGFEES) {
         // Create bar entries
         ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0f, totalShare));
-        entries.add(new BarEntry(1f, totalPolicy));
-        entries.add(new BarEntry(2f, loanRec));
-        entries.add(new BarEntry(3f, sbDeposit));
-        entries.add(new BarEntry(4f, serviceTax));
-        entries.add(new BarEntry(5f, processingFees));
+        entries.add(new BarEntry(0f, TOTALSHARE));
+        entries.add(new BarEntry(1f, TOTALPOLICY));
+        entries.add(new BarEntry(2f, LOANREC));
+        entries.add(new BarEntry(3f, SBDEPOSIT));
+        entries.add(new BarEntry(4f, SERVICETAX));
+        entries.add(new BarEntry(5f, PROCESSINGFEES));
 
         // Create a data set and customize it
         BarDataSet dataSet = new BarDataSet(entries, "Financial Data");
@@ -391,15 +553,15 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         barChart.invalidate();
     }
 
-    private void setupPieChart() {
+    private void setupPieChart(Float TOTALSHARE,Float TOTALPOLICY,Float LOANREC,Float SBDEPOSIT,Float SERVICETAX,Float PROCESSINGFEES)  {
         // Create pie entries
         ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(totalShare, "Total Share"));
-        entries.add(new PieEntry(totalPolicy, "Total Policy"));
-        entries.add(new PieEntry(loanRec, "Loan Rec"));
-        entries.add(new PieEntry(sbDeposit, "SB Deposit"));
-        entries.add(new PieEntry(serviceTax, "Service Tax"));
-        entries.add(new PieEntry(processingFees, "Processing Fees"));
+        entries.add(new PieEntry(TOTALSHARE, "Total Share"));
+        entries.add(new PieEntry(TOTALPOLICY, "Total Policy"));
+        entries.add(new PieEntry(LOANREC, "Loan Rec"));
+        entries.add(new PieEntry(SBDEPOSIT, "SB Deposit"));
+        entries.add(new PieEntry(SERVICETAX, "Service Tax"));
+        entries.add(new PieEntry(PROCESSINGFEES, "Processing Fees"));
 
         // Create a data set and customize it
         PieDataSet dataSet = new PieDataSet(entries, "Financial Data");
@@ -452,7 +614,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 month += 1;
 
-                binding.toDateText.setText(formatdate(dayOfMonth) + "-" + monthlist.get(month - 1) + "-" + year);
+                binding.toDateText.setText(formatdate(dayOfMonth) + "-" + monthlist.get(month - 1) + "\n" + year);
                 tdate = Integer.parseInt(Integer.toString(year) + String.format("%02d", month) + String.format("%02d", dayOfMonth));
 //                getMemberDetails("all", "k");
             }
@@ -494,7 +656,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 month += 1;
 
-                binding.fromDateText.setText(formatdate(dayOfMonth) + "-" + monthlist.get(month - 1) + "-" + year);
+                binding.fromDateText.setText(formatdate(dayOfMonth) + "-" + monthlist.get(month - 1) + "\n" + year);
                 fdate = Integer.parseInt(Integer.toString(year) + String.format("%02d", month) + String.format("%02d", dayOfMonth));
 //                getMemberDetails("all", "k");
             }
