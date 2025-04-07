@@ -55,14 +55,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-<<<<<<< HEAD
             android:name=".activities.ArrLoanManualCollection"
             android:exported="false" />
         <activity
             android:name=".activities.ArrPolicyManualCollection"
-=======
+            android:exported="false" />
+        <activity
+
             android:name=".activities.AdminEmpDetailsActivity"
->>>>>>> bfa3ccf6543aebbf464404794fc5e80a7b282cf0
             android:exported="false" />
         <activity
             android:name=".activities.ArrTodayPolicyCollReportActivity"
