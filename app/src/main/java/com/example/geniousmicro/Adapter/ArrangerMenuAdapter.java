@@ -18,6 +18,7 @@ import com.example.geniousmicro.activities.AgentPolicyDueReportDaywise;
 import com.example.geniousmicro.activities.ArrLoanCollReportActivity;
 import com.example.geniousmicro.activities.ArrLoanDueReportActivity;
 import com.example.geniousmicro.activities.ArrPolicyCollReportActivity;
+import com.example.geniousmicro.activities.ArrTodayPolicyCollReportActivity;
 import com.example.geniousmicro.activities.ArrangerMemberLoanStatementActivity;
 import com.example.geniousmicro.activities.ArrangerSBCollectionActivity;
 import com.example.geniousmicro.activities.CollectionReportActivity;
@@ -115,6 +116,10 @@ public class ArrangerMenuAdapter extends BaseAdapter {
                 } else if (menuname.equals("Today LoanCollection")){
                     Intent intent=new Intent(context, ArrLoanCollReportActivity.class);
                     intent.putExtra("LoanCollectionType","Today LoanCollection");
+                    context.startActivity(intent);
+                }
+                else if (menuname.equals("Today PolicyCollection")){
+                    Intent intent=new Intent(context, ArrTodayPolicyCollReportActivity.class);
                     context.startActivity(intent);
                 }
                 else if (menuname.equals("Today LSTransaction")){
