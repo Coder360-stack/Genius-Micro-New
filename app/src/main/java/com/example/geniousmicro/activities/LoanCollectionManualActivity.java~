@@ -18,7 +18,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.geniousmicro.Data.PostDataParserObjectResponse;
 import com.example.geniousmicro.Data.TempData;
 import com.example.geniousmicro.Data.VolleyCallback;
-import com.example.geniousmicro.LoanCollectionActivity;
 import com.example.geniousmicro.MainActivity;
 import com.example.geniousmicro.Models.UtilityModels.LateFineModel;
 import com.example.geniousmicro.Models.UtilityModels.LoanEMIBreakUpModel;
@@ -28,14 +27,10 @@ import com.example.geniousmicro.R;
 import com.example.geniousmicro.UserData.GlobalUserData;
 import com.example.geniousmicro.databinding.ActivityLoanCollectionBinding;
 import com.example.geniousmicro.databinding.ActivityLoanCollectionManualBinding;
-import com.example.geniousmicro.mssql.SqlManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -188,8 +183,7 @@ public class LoanCollectionManualActivity extends AppCompatActivity implements V
                 accDetailsList = new ArrayList<>();
                 accList.add("~ Select Account ~");
             }
-            getLoanCodes(searchValue,GlobalUserData.employeeDataModel.getEmployeeID());
-            //getLoanAccountDetails(ApiLinks.GET_LOAN_ACCOUNT_DETAILS, searchValue);
+            getLoanAccountDetails(ApiLinks.GET_LOAN_ACCOUNT_DETAILS, searchValue);
         }
         if (view == binding.cBtnView) {
             Double enteredAmount = Double.parseDouble(binding.tilAmount.getEditableText().toString().trim());
@@ -278,58 +272,6 @@ til_accountNumber
         if (view == binding.cBtnPrint) {
             Toast.makeText(this, "Faild To Print", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void getLoanCodes(String searchValue, String employeeID) {
-        Connection cn = new SqlManager().getSQLConnection();
-        try {
-            if (cn != null) {
-                CallableStatement smt = cn.prepareCall("{call ADROID_GetLoanCodes_BY_CodeOrName(?,?)}");
-                smt.setString("@searchValue",searchValue);
-                smt.setString("@ArrangerCode",employeeID);
-                smt.execute();
-                ResultSet rs = smt.getResultSet();
-                if (rs.isBeforeFirst()){
-                    while (rs.next()) {
-                        accDetailsList.add(new SBDataModel(rs.getString("AccountCode"),
-                                rs.getString("Name"),
-                                rs.getString("Father"),
-                                rs.getString("AccountType"),
-                                rs.getString("AccountBalance")));
-                        accList.add(rs.getString("AccountCode") + " - " + rs.getString("Name"));
-
-                    }
-                    if (accList.size() > 0) {
-                        ArrayAdapter ad
-                                = new ArrayAdapter(
-                                LoanCollectionManualActivity.this,
-                                android.R.layout.simple_spinner_item,
-                                accList);
-                        ad.setDropDownViewResource(
-                                android.R.layout
-                                        .simple_spinner_dropdown_item);
-
-                        binding.spSearchtxt.setAdapter(ad);
-                        binding.laySearch.getLayoutParams().height = 250;
-                        binding.spSearchtxt.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.spSearchtxt.setVisibility(View.GONE);
-                        Toast.makeText(LoanCollectionManualActivity.this, "No Data Found", Toast.LENGTH_SHORT).show();
-                    }
-                }else{
-                    Toast.makeText(LoanCollectionManualActivity.this, "No Data Found", Toast.LENGTH_SHORT).show();
-                }
-
-            }else{
-                binding.spSearchtxt.setVisibility(View.GONE);
-                Toast.makeText(LoanCollectionManualActivity.this, "Some Error Occurred", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            binding.spSearchtxt.setVisibility(View.GONE);
-            Toast.makeText(LoanCollectionManualActivity.this, "Some Error Occurred", Toast.LENGTH_SHORT).show();
-        }
-
-
     }
 
     private void insertLoanMEI(String url, String Pcode, String employeeID,String amount, int error) {

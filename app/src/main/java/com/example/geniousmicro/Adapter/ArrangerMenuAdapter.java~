@@ -17,7 +17,6 @@ import com.example.geniousmicro.activities.AgentLoanDueReportDaywise;
 import com.example.geniousmicro.activities.AgentPolicyDueReportDaywise;
 import com.example.geniousmicro.activities.ArrLoanCollReportActivity;
 import com.example.geniousmicro.activities.ArrLoanDueReportActivity;
-import com.example.geniousmicro.activities.ArrLoanManualCollection;
 import com.example.geniousmicro.activities.ArrPolicyCollReportActivity;
 import com.example.geniousmicro.activities.ArrPolicyManualCollection;
 import com.example.geniousmicro.activities.ArrTodayPolicyCollReportActivity;

@@ -35,6 +35,8 @@ public class Helper {
         Constants.menuItemList.add(new MenuItemModel("Group Collection Report", R.drawable.investment_report));
         Constants.menuItemList.add(new MenuItemModel("LoanCollection Manual", R.drawable.investment_report));
         Constants.menuItemList.add(new MenuItemModel("PolicyCollection Manual", R.drawable.investment_report));
+        Constants.menuItemList.add(new MenuItemModel("Policy Manual Collection Report", R.drawable.plan_details));
+        Constants.menuItemList.add(new MenuItemModel("Loan Manual Collection Report", R.drawable.plan_details));
 
 
     }

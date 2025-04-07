@@ -24,11 +24,15 @@ import com.example.geniousmicro.RenewalCollectionActivity;
 import com.example.geniousmicro.UserData.GlobalUserData;
 import com.example.geniousmicro.databinding.ActivityRenewalCollectionBinding;
 import com.example.geniousmicro.databinding.ActivityRenewalCollectionManualBinding;
+import com.example.geniousmicro.mssql.SqlManager;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -173,7 +177,8 @@ public void onClick(View view) {
             arrayList_policyCodeName.clear();
             arrayList_policyCode.add("");
             arrayList_policyCodeName.add("--Select An Item--");
-            searchPolicyByNameOrCode(binding.etSearchtxt.getText().toString());
+            //searchPolicyByNameOrCode(binding.etSearchtxt.getText().toString());
+            searchPolicyCode(binding.etSearchtxt.getText().toString(),GlobalUserData.employeeDataModel.getEmployeeID());
         } else {
             Toast.makeText(this, "Please Enter Policy Code OR Name", Toast.LENGTH_LONG).show();
         }
@@ -234,6 +239,39 @@ public void onClick(View view) {
     }
 
 }
+
+    private void searchPolicyCode(String searchValue, String employeeID) {
+        Connection cn = new SqlManager().getSQLConnection();
+        try {
+            if (cn != null) {
+                CallableStatement smt = cn.prepareCall("{call ADROID_GetPolicyCodes_BY_CodeOrName(?,?)}");
+                smt.setString("@searchValue",searchValue);
+                smt.setString("@ArrangerCode",employeeID);
+                smt.execute();
+                ResultSet rs = smt.getResultSet();
+                if (rs.isBeforeFirst()){
+                    binding.spPolicyNameAndCodeList.setVisibility(View.VISIBLE);
+                    while (rs.next()) {
+                        arrayList_policyCode.add(rs.getString("AccountCode"));
+                        arrayList_policyCodeName.add(rs.getString("Name") + " - " + rs.getString("AccountCode"));
+
+                    }
+                    ArrayAdapter arrayAdapter = new ArrayAdapter(RenewalCollectionManualActivity.this, R.layout.row_savings_acc_hint, arrayList_policyCodeName);
+                    arrayAdapter.setDropDownViewResource(R.layout.row_savings_acc_hint);
+                    binding.spPolicyNameAndCodeList.setAdapter(arrayAdapter);
+
+                }else{
+                    Toast.makeText(RenewalCollectionManualActivity.this, "No Data Found", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(RenewalCollectionManualActivity.this, "Some Error Occurred", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(RenewalCollectionManualActivity.this, "Some Error Occurred", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
 
 private void checkRenewalPending(String policyCode) {
     binding.btnSave.setVisibility(View.GONE);
