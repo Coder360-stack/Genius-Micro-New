@@ -3,9 +3,12 @@ package com.example.geniousmicro;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -14,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -41,124 +45,138 @@ import com.example.geniousmicro.util.Helper;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    ActivityMainBinding binding;
-    Handler topRatedHandler = new Handler();
+    private static final String TAG = "MainActivity";
+    private ActivityMainBinding binding;
+    private Handler topRatedHandler = new Handler(Looper.getMainLooper());
     private int dotsCount;
     private ImageView[] dots;
     private int backPressCounter = 0;
     private static final int REQUIRED_BACK_PRESS_COUNT = 2;
     private static final int BACK_PRESS_INTERVAL = 2000;
+    private boolean isTopBannerRunning = false;
 
-    SharedPreferences sp;
-    SharedPreferences.Editor editor;
-    String SHARED_PREF_NAME = "UserDetails";
-    String USERNAME = "UserName";
-    String PASSWORD = "Password";
+    private SharedPreferences sp;
+    private SharedPreferences.Editor editor;
+    private static final String SHARED_PREF_NAME = "UserDetails";
+    private static final String USERNAME = "UserName";
+    private static final String PASSWORD = "Password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        EdgeToEdge.enable(this);
-        setContentView(binding.getRoot());
+        try {
+            binding = ActivityMainBinding.inflate(getLayoutInflater());
+            EdgeToEdge.enable(this);
+            setContentView(binding.getRoot());
 
-        bindEventHandlers();
-        ActivityChange();
-        Helper.AddMenuList();
+            initSharedPreferences();
+            setStatusBarColor();
+            setupWindowInsets();
 
+            if (!isNetworkAvailable()) {
+                showNetworkErrorDialog();
+            }
 
-        binding.notificationmsg.setSelected(true);
+            bindEventHandlers();
+            initHomeFragment(savedInstanceState);
+            setupTopViewPager();
+            setupArrangerInfo();
+            setupLogoutButton();
+            loadMenuItems();
 
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onCreate: ", e);
+            showErrorDialog("Application Error", "Failed to initialize application properly. Please restart the app.");
+        }
+    }
+
+    private void initSharedPreferences() {
         sp = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         editor = sp.edit();
+    }
 
+    private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
 
+    private void setStatusBarColor() {
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.orange));
+    }
 
-        StatusbarColor();
-
+    private void initHomeFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            Home_Fragment exampleFragment = new Home_Fragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.fragment_container, exampleFragment);
-            fragmentTransaction.commit();
+            try {
+                Home_Fragment homeFragment = new Home_Fragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.fragment_container, homeFragment);
+                fragmentTransaction.commit();
+            } catch (Exception e) {
+                Log.e(TAG, "Error loading home fragment: ", e);
+                showErrorDialog("Fragment Error", "Failed to load home screen. Please restart the app.");
+            }
         }
-        topVp();
+    }
 
-        Log.d("data", "onCreate: " + GlobalUserData.employeeDataModel.getEmployeeID());
-        binding.gridView.setBackgroundResource(R.drawable.rec_card_bac);
-        binding.Arrcode.setText("" + GlobalUserData.employeeDataModel.getEmployeeID());
-        binding.ArrangerName.setText("" + GlobalUserData.employeeDataModel.getEmployeeName());
+    private void setupArrangerInfo() {
+        try {
+            binding.gridView.setBackgroundResource(R.drawable.rec_card_bac);
+            binding.notificationmsg.setSelected(true);
 
-        binding.logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Are You Want To Logout");
-                builder.setPositiveButton("Yes", (dialog, which) -> {
+            if (GlobalUserData.employeeDataModel != null) {
+                binding.Arrcode.setText(GlobalUserData.employeeDataModel.getEmployeeID());
+                binding.ArrangerName.setText(GlobalUserData.employeeDataModel.getEmployeeName());
+            } else {
+                Log.e(TAG, "Employee data model is null");
+                binding.Arrcode.setText("N/A");
+                binding.ArrangerName.setText("Employee data unavailable");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up arranger info: ", e);
+        }
+    }
+
+    private void setupLogoutButton() {
+        binding.logout.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("Are You Want To Logout");
+            builder.setPositiveButton("Yes", (dialog, which) -> {
+                try {
                     editor.clear();
                     editor.apply();
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finishAffinity();
-                });
-                builder.setNegativeButton("No", (dialog, which) -> {
-
-                });
-                builder.create().show();
-
-
-            }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error during logout: ", e);
+                    showToast("Logout failed. Please try again.");
+                }
+            });
+            builder.setNegativeButton("No", (dialog, which) -> { });
+            builder.create().show();
         });
-
-        getAllMenus();
-
-        //GridView gridView = findViewById(R.id.grid_view);
-//        String[] texts = {"New Member", "Policy Renewal", "Loan EMI", "Loan Details", "Policy Details","Approved Member List","UnApproved Member List","LoanDue Report",  "LS Transaction", "Loan Statement", "LS Transaction Report","LoanCollection","PolicyCollection","Today LoanCollection","Group Loan Collection","Group Collection Report","All Collection",};
-//        int[] images = {R.drawable.new_member,R.drawable.policy_renewal,R.drawable.loan_emi,R.drawable.loan_details,R.drawable.policy_details,R.drawable.loan_due_report,R.drawable.policy_details,R.drawable.investment_report,R.drawable.plan_details,R.drawable.plan_details,R.drawable.test1,R.drawable.loan_due_report,R.drawable.investment_report,R.drawable.plan_details,R.drawable.test1,R.drawable.loan_emi,R.drawable.investment_report,R.drawable.loan_due_report,};
-        //Helper.AddMenuList();
-
-        // Example data
-      /*  String[] texts = {"New Member", "Policy Renewal", "Loan EMI", "Loan Details", "Policy Details","Approved Member List","UnApproved Member List","LoanDue Report",  "LS Transaction", "Loan Statement", "LS Transaction Report","LoanCollection","PolicyCollection","Today LoanCollection","Today PolicyRenewal","Today LSTransaction","Group Loan Collection","Group Collection Report",};
-        int[] images = {R.drawable.new_member,R.drawable.policy_renewal,R.drawable.loan_emi,R.drawable.loan_details,R.drawable.policy_details,R.drawable.loan_due_report,R.drawable.policy_details,R.drawable.investment_report,R.drawable.plan_details,R.drawable.plan_details,R.drawable.test1,R.drawable.loan_due_report,R.drawable.test2,R.drawable.test3,R.drawable.investment_report,R.drawable.plan_details,R.drawable.test1,R.drawable.loan_emi,R.drawable.investment_report,};
-*/
-
-  /*      String[] texts = {"New Member",  "Loan EMI", "Loan Details", "Approved Member List","UnApproved Member List","LoanDue Report",  "Loan Statement", "LoanCollection","Today LoanCollection","Group Loan Collection","Group Collection Report",};
-        int[] images = {R.drawable.new_member,R.drawable.policy_renewal,R.drawable.loan_emi,R.drawable.savings_statement,R.drawable.loan_details,R.drawable.policy_details,R.drawable.loan_due_report,R.drawable.policy_details,R.drawable.investment_report,R.drawable.plan_details,R.drawable.plan_details,};
-*/
-        ArrangerMenuAdapter adapter = new ArrangerMenuAdapter(this, Constants.menuItemList); //texts, images);
-        binding.gridView.setAdapter(adapter);
-
-
     }
 
+    private void loadMenuItems() {
+        try {
+            // Load menu items
+            Helper.AddMenuList();
+            getAllMenus();
 
-
-
-
-    private void getAllMenus() {
-        //api call
-        String[] apiresponse = new String[]{"New Member", "Policy Renewal", "Loan EMI"};
-        for (String s : apiresponse
-        ) {
-            Helper.getCheckedMenu(s);
+            // Set adapter for grid view
+            ArrangerMenuAdapter adapter = new ArrangerMenuAdapter(this, Constants.menuItemList);
+            binding.gridView.setAdapter(adapter);
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading menu items: ", e);
+            showErrorDialog("Menu Error", "Failed to load menu items. Some features may not be available.");
         }
-
-        //api call
     }
-
-    private void ActivityChange() {
-
-
-    }
-
-
 
     private void bindEventHandlers() {
         binding.NewMember.setOnClickListener(this);
@@ -168,23 +186,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         binding.Home.setOnClickListener(this);
     }
 
-    private void StatusbarColor() {
+    private void getAllMenus() {
+        try {
+            // Simulating API call
+            String[] apiResponse = new String[]{"New Member", "Policy Renewal", "Loan EMI"};
 
-
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(this, R.color.orange));
-
+            for (String menuItem : apiResponse) {
+                Helper.getCheckedMenu(menuItem);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting menus from API: ", e);
+            showToast("Failed to load all menu items. Some features may not be available.");
+        }
     }
 
-    public void topVp() {
-        List<Integer> latestModels = new ArrayList<>();
-        latestModels.add(R.drawable.ic_top_viewpager);
-        latestModels.add(R.drawable.ic_top_viewpager2);
-        latestModels.add(R.drawable.ic_top_viewpager3);
+    private void setupTopViewPager() {
+        try {
+            List<Integer> bannerImages = new ArrayList<>();
+            bannerImages.add(R.drawable.ic_top_viewpager);
+            bannerImages.add(R.drawable.ic_top_viewpager2);
+            bannerImages.add(R.drawable.ic_top_viewpager3);
 
-        TopBannerVpAdapter viewPagerAdapter = new TopBannerVpAdapter(getApplicationContext(), latestModels, binding.vpTopBanner);
-        binding.vpTopBanner.setAdapter(viewPagerAdapter);
+            TopBannerVpAdapter viewPagerAdapter = new TopBannerVpAdapter(getApplicationContext(), bannerImages, binding.vpTopBanner);
+            binding.vpTopBanner.setAdapter(viewPagerAdapter);
+            configureViewPager();
+            setupViewPagerDots(viewPagerAdapter.getItemCount());
+
+            binding.vpTopBanner.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    updateDots(position);
+                    resetAutoScroll();
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting up top banner ViewPager: ", e);
+            binding.vpTopBanner.setVisibility(View.GONE);
+            binding.SliderDots.setVisibility(View.GONE);
+        }
+    }
+
+    private void configureViewPager() {
         binding.vpTopBanner.setClipChildren(false);
         binding.vpTopBanner.setClipToPadding(false);
         binding.vpTopBanner.setOffscreenPageLimit(3);
@@ -197,47 +240,82 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             page.setScaleY(0.85f + r * 0.15f);
         });
         binding.vpTopBanner.setPageTransformer(compositePageTransformer);
+    }
 
-        dotsCount = viewPagerAdapter.getItemCount();
+    private void setupViewPagerDots(int itemCount) {
+        binding.SliderDots.removeAllViews();
+        dotsCount = itemCount;
         dots = new ImageView[dotsCount];
+
         for (int i = 0; i < dotsCount; i++) {
             dots[i] = new ImageView(this);
             dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.non_active_dot));
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
             params.setMargins(8, 0, 8, 0);
             binding.SliderDots.addView(dots[i], params);
         }
-        dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
-        binding.vpTopBanner.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                topRatedHandler.removeCallbacks(topRatedRunnable);
-                topRatedHandler.postDelayed(topRatedRunnable, 4000);
-                // Update dots
-                for (int i = 0; i < dotsCount; i++) {
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.non_active_dot));
-                }
-                dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
-                // Looping logic
-                if (position == dotsCount - 1) {
-                    binding.vpTopBanner.postDelayed(() -> binding.vpTopBanner.setCurrentItem(0, true), 4000);
-                }
-            }
-        });
+
+        if (dotsCount > 0) {
+            dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+        }
     }
 
-    private Runnable topRatedRunnable = new Runnable() {
+    private void updateDots(int position) {
+        for (int i = 0; i < dotsCount; i++) {
+            dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.non_active_dot));
+        }
+        dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
+    }
+
+    private void resetAutoScroll() {
+        topRatedHandler.removeCallbacks(topRatedRunnable);
+        if (isTopBannerRunning) {
+            topRatedHandler.postDelayed(topRatedRunnable, 4000);
+        }
+    }
+
+    private final Runnable topRatedRunnable = new Runnable() {
         @Override
         public void run() {
-            int currentItem = binding.vpTopBanner.getCurrentItem();
-            if (currentItem == dotsCount - 1) {
-                binding.vpTopBanner.setCurrentItem(0);
-            } else {
-                binding.vpTopBanner.setCurrentItem(currentItem + 1);
+            try {
+                if (binding != null && binding.vpTopBanner != null) {
+                    int currentItem = binding.vpTopBanner.getCurrentItem();
+                    if (currentItem == dotsCount - 1) {
+                        binding.vpTopBanner.setCurrentItem(0, true);
+                    } else {
+                        binding.vpTopBanner.setCurrentItem(currentItem + 1, true);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in topRatedRunnable: ", e);
             }
         }
     };
+
+    @Override
+    public void onClick(View v) {
+        try {
+            if (v == binding.NewMember) {
+                startActivity(new Intent(MainActivity.this, NewMemberActivity.class));
+            } else if (v == binding.LoanCollection) {
+                startActivity(new Intent(MainActivity.this, LoanCollectionActivity.class));
+            } else if (v == binding.PolicyCollection) {
+                startActivity(new Intent(MainActivity.this, RenewalCollectionActivity.class));
+            } else if (v == binding.Profile) {
+                Intent intent = new Intent(MainActivity.this, SavingsCollectionReportActivity.class);
+                intent.putExtra("SBCollectionType", "Today SBTransaction");
+                startActivity(intent);
+            } else if (v == binding.Home) {
+                showToast("Already in Home Page");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error handling click: ", e);
+            showErrorDialog("Navigation Error", "Failed to navigate to the selected screen. Please try again.");
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -245,49 +323,137 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (backPressCounter == REQUIRED_BACK_PRESS_COUNT) {
             finishAffinity();
-//            super.onBackPressed();
-//            exit(0);
-//            return;
-            // Exit the app
         } else {
-            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+            showToast("Press back again to exit");
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    backPressCounter = 0;
-                }
-            }, BACK_PRESS_INTERVAL);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> backPressCounter = 0, BACK_PRESS_INTERVAL);
         }
     }
 
     @Override
-    public void onClick(View v) {
-        if (v == binding.NewMember) {
-            Intent intent = new Intent(MainActivity.this, NewMemberActivity.class);
-            startActivity(intent);
-        } else if (v == binding.LoanCollection) {
-            Intent intent = new Intent(MainActivity.this, LoanCollectionActivity.class);
-            startActivity(intent);
-        } else if (v == binding.PolicyCollection) {
-            Intent intent = new Intent(MainActivity.this, RenewalCollectionActivity.class);
-            startActivity(intent);
+    protected void onResume() {
+        super.onResume();
+        startTopBannerAutoScroll();
+        checkForCriticalUpdates();
+    }
 
-        } else if (v == binding.Profile) {
+    @Override
+    protected void onPause() {
+        stopTopBannerAutoScroll();
+        super.onPause();
+    }
 
-            Intent intent = new Intent(MainActivity.this, SavingsCollectionReportActivity.class);
-            intent.putExtra("SBCollectionType", "Today SBTransaction");
-            startActivity(intent);
-          /*  Intent intent=new Intent(context, SavingsCollectionReportActivity.class);
-            intent.putExtra("SBCollectionType","Today SBTransaction");
-            context.startActivity(intent);*/
-        } else if (v==binding.Home) {
-                Toast.makeText(this,"Already in Home Page",Toast.LENGTH_SHORT).show();
+    @Override
+    protected void onDestroy() {
+        cleanUp();
+        super.onDestroy();
+    }
 
+    private void cleanUp() {
+        stopTopBannerAutoScroll();
+        if (binding != null && binding.vpTopBanner != null) {
+            binding.vpTopBanner.unregisterOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {});
         }
+        binding = null;
+    }
 
+    private void startTopBannerAutoScroll() {
+        isTopBannerRunning = true;
+        topRatedHandler.postDelayed(topRatedRunnable, 4000);
+    }
+
+    private void stopTopBannerAutoScroll() {
+        isTopBannerRunning = false;
+        topRatedHandler.removeCallbacks(topRatedRunnable);
+    }
+
+    private void checkForCriticalUpdates() {
+        // This method would check for required app updates
+        // Implementation would depend on your update strategy
+        try {
+            // Example: Check version against server
+            // If update needed:
+            // showUpdateRequiredDialog();
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking for updates: ", e);
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
+    }
+
+    private void showNetworkErrorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Network Error")
+                .setMessage("No internet connection. Some features may not work properly.")
+                .setPositiveButton("Settings", (dialog, which) -> {
+                    // Open network settings
+                    startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+                })
+                .setNegativeButton("Continue", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .create()
+                .show();
+    }
+
+    private void showDatabaseErrorDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Database Error")
+                .setMessage(message)
+                .setPositiveButton("Retry", (dialog, which) -> {
+                    // Try to reload data
+                    loadMenuItems();
+                })
+                .setNegativeButton("Continue", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .create()
+                .show();
+    }
+
+    private void showErrorDialog(String title, String message) {
+        if (!isFinishing()) {
+            new AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Method to handle database errors
+     * @param e The exception that occurred
+     * @param operation The database operation that failed
+     */
+    public void handleDatabaseError(Exception e, String operation) {
+        Log.e(TAG, "Database error during " + operation + ": ", e);
+        showDatabaseErrorDialog("Error accessing local data. Please try again later.");
+    }
+
+    /**
+     * Method to handle network errors during API calls
+     * @param e The exception that occurred
+     * @param apiName The name of the API that failed
+     */
+    public void handleNetworkError(Exception e, String apiName) {
+        Log.e(TAG, "Network error calling " + apiName + ": ", e);
+        if (isNetworkAvailable()) {
+            showToast("Server connection error. Please try again later.");
+        } else {
+            showNetworkErrorDialog();
+        }
     }
 }
-
-
-/////

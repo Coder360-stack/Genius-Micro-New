@@ -108,7 +108,6 @@ public class ArrangerMenuAdapter extends BaseAdapter {
                     intent.putExtra("user","Arranger");
                     context.startActivity(intent);
                 }
-
                 else if (menuname.equals("LoanCollection")){
                     Intent intent=new Intent(context, ArrLoanCollReportActivity.class);
                     context.startActivity(intent);
