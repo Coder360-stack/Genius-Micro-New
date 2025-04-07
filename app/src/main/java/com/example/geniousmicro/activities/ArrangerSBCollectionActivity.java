@@ -395,6 +395,7 @@ public class ArrangerSBCollectionActivity extends AppCompatActivity {
         binding.spSearchtxt.setVisibility(View.GONE);
     }
 
+
     @Override
     protected void onDestroy() {
         // Ensure dialog is dismissed to prevent window leaks
