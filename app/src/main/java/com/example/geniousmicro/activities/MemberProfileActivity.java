@@ -49,6 +49,7 @@ public class MemberProfileActivity extends AppCompatActivity {
         getMemberProfileDetails();
     }
 
+
     private void getMemberProfileDetails() {
         HashMap<String,String> map=new HashMap<>();
         Log.d("mdata", GlobalUserData.memberDataModel.getMemberID());
