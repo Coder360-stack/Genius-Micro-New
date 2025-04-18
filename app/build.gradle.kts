@@ -12,8 +12,8 @@ android {
         applicationId = "com.example.geniousmicro"
         minSdk = 24
         targetSdk = 34
-        versionCode = 5
-        versionName = "1.2.2"//new
+        versionCode = 6
+        versionName = "1.2.3"
         setProperty("archivesBaseName", "GeniousMicro-V-$versionName")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
