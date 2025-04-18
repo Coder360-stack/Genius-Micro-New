@@ -157,9 +157,48 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_16mdp"
                         android:orientation="horizontal">
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_100mdp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="@dimen/_8mdp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="@dimen/_8mdp"
+                            app:cardElevation="@dimen/_2mdp">
+
+                            <LinearLayout
+                                android:id="@+id/policyCollReport"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:padding="@dimen/_8mdp"
+                                android:background="@drawable/card_gradient_random">
+
+                                <ImageView
+                                    android:layout_width="@dimen/_32mdp"
+                                    android:layout_height="@dimen/_32mdp"
+                                    android:src="@drawable/ic_report"
+                                    app:tint="@color/white" />
+
+                                <TextView
+
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_8mdp"
+                                    android:gravity="center"
+                                    android:text="Policy Collection"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="0dp"
+                            android:visibility="gone"
                             android:layout_height="@dimen/_100mdp"
                             android:layout_weight="1"
                             android:layout_marginEnd="@dimen/_8mdp"
@@ -257,44 +296,7 @@
                         android:layout_marginTop="@dimen/_16mdp"
                         android:orientation="horizontal">
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/_100mdp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="@dimen/_8mdp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardCornerRadius="@dimen/_8mdp"
-                            app:cardElevation="@dimen/_2mdp">
 
-                            <LinearLayout
-                                android:id="@+id/policyCollReport"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="@dimen/_8mdp"
-                                android:background="@drawable/card_gradient_random">
-
-                                <ImageView
-                                    android:layout_width="@dimen/_32mdp"
-                                    android:layout_height="@dimen/_32mdp"
-                                    android:src="@drawable/ic_report"
-                                    app:tint="@color/white" />
-
-                                <TextView
-
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/_8mdp"
-                                    android:gravity="center"
-                                    android:text="Policy Collection"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="0dp"
