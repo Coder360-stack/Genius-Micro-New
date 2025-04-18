@@ -1,12 +1,17 @@
 package com.example.geniousmicro;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,312 +30,294 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.geniousmicro.Data.PostDataParserObjectResponse;
 import com.example.geniousmicro.Data.VolleyCallback;
 import com.example.geniousmicro.Others.ApiLinks;
-import com.example.geniousmicro.databinding.ActivityLoginBinding;
-import com.example.geniousmicro.databinding.UpdateAvailableLayoutBinding;
 import com.example.geniousmicro.util.OpenLinks;
 
-
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
 public class SplashScreen extends AppCompatActivity implements View.OnClickListener {
-    // from sullair
+    private static final String TAG = "SplashScreen";
+    private static final int SPLASH_DELAY = 2000; // 2 seconds
+
     private TextView mTv_splashVersion;
     private LinearLayout mLl_openGTech;
-    private LinearLayout mLl_devByGen;
+    private String versionName;
+    private int versionCode;
 
     public static String updated_app_ver;
+    private boolean isCheckingUpdate = false;
+    private AlertDialog networkErrorDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.splash_screen), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        initializeViews();
+        getAppVersionInfo();
 
-        setViewReferences();
-        bindEventHandlers();
+        if (isNetworkAvailable()) {
+            checkForUpdates();
+        } else {
+            showNetworkErrorDialog();
+        }
+    }
 
-        //TextView versionInfoTextView = findViewById(R.id.version_info);
+    private void initializeViews() {
+        mTv_splashVersion = findViewById(R.id.splash_version);
+        mLl_openGTech = findViewById(R.id.ll_open_genius_technology_links);
 
-        // Retrieve app version name and version code
+        // Set click listeners
+        mTv_splashVersion.setOnClickListener(this);
+        mLl_openGTech.setOnClickListener(this);
+    }
+
+    private void getAppVersionInfo() {
         try {
             PackageManager packageManager = getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
 
-            String versionName = packageInfo.versionName;
-            int versionCode = packageInfo.versionCode; // Deprecated in API level 28; for newer versions use 'long versionCode'
+            versionName = packageInfo.versionName;
+            versionCode = packageInfo.versionCode;
 
             String versionInfo = "Version Name: " + versionName + "\nVersion Code: " + versionCode;
             mTv_splashVersion.setText(versionInfo);
-            // mTv_splashVersion.setText("Version " + BuildConfig.VERSION_NAME);
-
-
-            isUpdateAvail(versionName, versionCode);
-
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error getting package info", e);
+            mTv_splashVersion.setText("Version information unavailable");
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) {
+            return false;
+        }
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void showNetworkErrorDialog() {
+        if (networkErrorDialog != null && networkErrorDialog.isShowing()) {
+            return;
         }
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("No Internet Connection")
+                .setMessage("This app requires an internet connection to function. Please check your connectivity and try again.")
+                .setCancelable(false)
+                .setPositiveButton("Retry", (dialog, which) -> {
+                    if (isNetworkAvailable()) {
+                        checkForUpdates();
+                    } else {
+                        Toast.makeText(this, "Still no internet connection", Toast.LENGTH_SHORT).show();
+                        showNetworkErrorDialog();
+                    }
+                })
+                .setNegativeButton("Open Settings", (dialog, which) -> {
+                    try {
+                        startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error opening settings", e);
+                        Toast.makeText(this, "Unable to open settings", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-        //  mTv_splashVersion.setText("Version " + BuildConfig.VERSION_NAME);
-
-        //  isUpdateAvail();
-        //callWaitMethod(false);
-
+        networkErrorDialog = builder.create();
+        networkErrorDialog.show();
     }
 
+    private void checkForUpdates() {
+        if (isCheckingUpdate) {
+            return;
+        }
 
-    private void setViewReferences() {
-        mTv_splashVersion = findViewById(R.id.splash_version);
-        mLl_openGTech = findViewById(R.id.ll_open_genius_technology_links);
+        isCheckingUpdate = true;
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("versionName", versionName);
+        params.put("versionCode", String.valueOf(versionCode));
+        Log.e("versionName",""+versionName);
+        // Use the existing PostDataParserObjectResponse implementation
+        new PostDataParserObjectResponse(this, ApiLinks.IS_UPDATE_AVAILABLE, params, new VolleyCallback() {
+            @Override
+            public void onSuccessResponse(JSONObject result) {
+                isCheckingUpdate = false;
+                handleUpdateCheckResponse(result);
+            }
+
+            @Override
+            public void onErrorResponse(String error) {
+                isCheckingUpdate = false;
+                Log.e(TAG, "API Error: " + error);
+
+                runOnUiThread(() -> {
+                    // Show error dialog using built-in AlertDialog
+                    new AlertDialog.Builder(SplashScreen.this)
+                            .setTitle("Connection Error")
+                            .setMessage("Unable to connect to the server. Would you like to retry?")
+                            .setPositiveButton("Retry", (dialog, which) -> {
+                                if (isNetworkAvailable()) {
+                                    checkForUpdates();
+                                } else {
+                                    showNetworkErrorDialog();
+                                }
+                            })
+                            .setNegativeButton("Cancel", (dialog, which) -> {
+                                // Just show a toast and proceed to app with limited functionality
+                                Toast.makeText(SplashScreen.this, "Some features may not be available", Toast.LENGTH_LONG).show();
+                                proceedToApp();
+                            })
+                            .setCancelable(false)
+                            .show();
+                });
+            }
+        });
     }
 
-    private void bindEventHandlers() {
-        mTv_splashVersion.setOnClickListener(this);
-        mLl_openGTech.setOnClickListener(this);
+    private void handleUpdateCheckResponse(JSONObject result) {
+        try {
+            if (!result.has("versionDetails")) {
+                Log.e(TAG, "Invalid API response format - missing versionDetails");
+                Toast.makeText(this, "Error checking for updates", Toast.LENGTH_SHORT).show();
+                proceedToApp();
+                return;
+            }
+
+            JSONArray versionDetails = result.getJSONArray("versionDetails");
+            if (versionDetails.length() == 0) {
+                proceedToApp();
+                return;
+            }
+
+            JSONObject updateInfo = versionDetails.getJSONObject(0);
+            String isAvailable = updateInfo.optString("isAvailable", "0");
+
+            if ("1".equals(isAvailable)) {
+                String newVersionName = updateInfo.optString("VersionName", "");
+                String newVersionCode = updateInfo.optString("VersionCode", "");
+                String updateMessage = updateInfo.optString("LatestUpdate", "");
+
+                boolean isSameVersion = newVersionName.equals(versionName);
+                showUpdateDialog(newVersionName, newVersionCode, updateMessage, isSameVersion);
+            } else {
+                proceedToApp();
+            }
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing update response: " + e.getMessage(), e);
+            Toast.makeText(this, "Error processing server response", Toast.LENGTH_SHORT).show();
+            proceedToApp();
+        } catch (Exception e) {
+            Log.e(TAG, "Unexpected error: " + e.getMessage(), e);
+            Toast.makeText(this, "An unexpected error occurred", Toast.LENGTH_SHORT).show();
+            proceedToApp();
+        }
+    }
+
+    private void showUpdateDialog(String versionName, String versionCode, String updateMessage, boolean isOptionalUpdate) {
+        Dialog updateDialog = new Dialog(this);
+        updateDialog.setContentView(R.layout.update_available_layout);
+        updateDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        updateDialog.setCancelable(false);
+
+        TextView versionNameTextView = updateDialog.findViewById(R.id.VersionName);
+        TextView versionCodeTextView = updateDialog.findViewById(R.id.VersionCode);
+        Button updateButton = updateDialog.findViewById(R.id.btn_update);
+        Button updateLaterButton = updateDialog.findViewById(R.id.btn_update_later);
+        TextView updateMessageView = updateDialog.findViewById(R.id.tv_latest_features);
+
+        versionNameTextView.setText(versionName);
+        versionCodeTextView.setText(versionCode);
+        updateMessageView.setText(updateMessage);
+        updateMessageView.setVisibility(View.VISIBLE);
+
+        // Show "Update Later" button only for optional updates
+        if (isOptionalUpdate) {
+            updateLaterButton.setVisibility(View.VISIBLE);
+        } else {
+            updateLaterButton.setVisibility(View.GONE);
+        }
+
+        updateLaterButton.setOnClickListener(v -> {
+            updateDialog.dismiss();
+            proceedToApp();
+        });
+
+        updateButton.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("market://details?id=" + getPackageName()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            } catch (Exception e) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } catch (Exception ex) {
+                    Log.e(TAG, "Error opening Play Store", ex);
+                    Toast.makeText(this, "Unable to open Play Store", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        updateDialog.show();
+    }
+
+    private void proceedToApp() {
+        // Add any animation here that was in the original code
+        // YoYo.with(Techniques.FadeIn).playOn(findViewById(R.id.tv_splash_activity_title));
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        }, SPLASH_DELAY);
     }
 
     @Override
     public void onClick(View view) {
         if (view == mLl_openGTech) {
-            new OpenLinks(this).openGeniusTechnology();
+            if (isNetworkAvailable()) {
+                new OpenLinks(this).openGeniusTechnology();
+            } else {
+                Toast.makeText(this, "Internet connection required", Toast.LENGTH_SHORT).show();
+                showNetworkErrorDialog();
+            }
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-    public void
-    isUpdateAvail(String versionName, int versionCode) {
-        HashMap<String, String> hasmap = new HashMap<>();
-
-
-        hasmap.put("versionName", versionName);
-        hasmap.put("versionCode", String.valueOf(versionCode));
-
-
-        new PostDataParserObjectResponse(this, ApiLinks.IS_UPDATE_AVAILABLE, hasmap, new VolleyCallback() {
-            @Override
-            public void onSuccessResponse(JSONObject result) {
-
-                try {
-                    JSONArray userData = result.getJSONArray("versionDetails");
-                    for (int i = 0; i < userData.length(); i++) {
-                        Log.d("data", "onSuccessResponse: " + userData.getJSONObject(i).getString("isAvailable"));
-                        if (userData.getJSONObject(i).getString("isAvailable").equals("1")) {
-                            String NewVersionName = userData.getJSONObject(i).getString("VersionName");
-                            String NewVersionCode = userData.getJSONObject(i).getString("VersionCode");
-                            String NewUpdateMessage = userData.getJSONObject(i).getString("LatestUpdate");
-
-
-                            Log.e("updateMessage2", "" + NewUpdateMessage);
-
-                            if (!NewVersionName.equals(versionName)) {
-                                Boolean IsFinalUpdate = false;
-                                showServerDialog(NewVersionName, NewVersionCode, NewUpdateMessage, IsFinalUpdate);
-                            } else {
-                                Boolean IsFinalUpdate = true;
-                                showServerDialog(NewVersionName, NewVersionCode, NewUpdateMessage, IsFinalUpdate);
-
-                              /* if (String.valueOf(versionCode).equals(NewVersionCode)){
-                                   Boolean IsFinalUpdate = true;
-                                   showServerDialog(NewVersionName,NewVersionCode,NewUpdateMessage,IsFinalUpdate);
-                               }else {
-                                   Boolean IsFinalUpdate = true;
-                                   showServerDialog(NewVersionName,NewVersionCode,NewUpdateMessage,IsFinalUpdate);
-
-                               }*/
-                            }
-
-/*
-                           if (String.valueOf(versionCode).equals(NewVersionCode)){
-                               Boolean IsFinalUpdate = false;
-                               showServerDialog(NewVersionName,NewVersionCode,NewUpdateMessage,IsFinalUpdate);
-                           }else {
-                               Boolean IsFinalUpdate = true;
-                               showServerDialog(NewVersionName,NewVersionCode,NewUpdateMessage,IsFinalUpdate);
-                           }*/
-
-
-                          /* if (NewVersionName.equals(versionName)){
-                               callWaitMethod(true);
-                           }else {
-                               if (String.valueOf(versionCode).equals(NewVersionCode)){
-                                   Boolean IsFinalUpdate = true;
-                                   showServerDialog(NewVersionName,NewVersionCode,NewUpdateMessage,IsFinalUpdate);
-                               }else {
-                                   Boolean IsFinalUpdate = false;
-                                   showServerDialog(NewVersionName,NewVersionCode,NewUpdateMessage,IsFinalUpdate);
-                               }
-                           }
-
-                           if (String.valueOf(versionCode).equals(NewVersionCode)){
-                               Boolean IsFinalUpdate = true;
-                               showServerDialog(NewVersionName,NewVersionCode,NewUpdateMessage,IsFinalUpdate);
-                           }else {
-                               Boolean IsFinalUpdate = false;
-                               showServerDialog(NewVersionName,NewVersionCode,NewUpdateMessage,IsFinalUpdate);
-                           }*/
-
-
-                            // if(!userData.getJSONObject(i).getString("VersionCode").equals(versionCode)){
-                       /*    if(!userData.getJSONObject(i).getString("VersionCode").equals(versionCode)){
-                               showServerDialog(versionName,versionCode);
-                           }else {
-                               callWaitMethod(true);
-                           }*/
-
-
-                        } else {
-
-                            callWaitMethod(false);
-                        }
-                    }
-
-
-                } catch (Exception e) {
-                    Toast.makeText(SplashScreen.this, "Error", Toast.LENGTH_SHORT).show();
-                    Log.d("EX", e.toString());
-                }
-
-
-            }
-
-
-            @Override
-            public void onErrorResponse(String error) {
-                Toast.makeText(SplashScreen.this, "Error ", Toast.LENGTH_SHORT).show();
-                Log.d("EX", error.toString());
-            }
-
-
-
-          /*  @Override
-            public void onSuccessResponse(JSONArray response) throws JSONException {
-                if (response != null) {
-                    JSONObject jsonObject = response.getJSONObject(0);
-                    updated_app_ver = jsonObject.getString("VersionName");
-                    if (jsonObject.getInt("isAvailable") == 1) {
-                        callWaitMethod(true);
-                    } else {
-                        callWaitMethod(false);
-                    }
-                }
-            }
-
-            @Override
-            public void onErrorResponse(String error) {
-                Log.e("isUpdateAvail", error);
-            }*/
-
-         /*   @Override
-            public void onGetResponse(JSONArray response) {
-                try {
-                    if (response != null) {
-                        JSONObject jsonObject = response.getJSONObject(0);
-                        updated_app_ver = jsonObject.getString("VersionName");
-                        if (jsonObject.getInt("isAvailable") == 1) {
-                            callWaitMethod(true);
-                        } else {
-                            callWaitMethod(false);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }*/
-        });
-    }
-
-    private void callWaitMethod(Boolean flag) {
-        if (flag) {
-//            YoYo.with(Techniques.StandUp)
-//                    .duration(3000)
-//                    .repeat(0)
-//                    .playOn(findViewById(R.id.tv_splash_activity_title));
-
-
-            int secondsDelayed = 2;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(SplashScreen.this, UpdateAppActivity.class));
-                    finish();
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                }
-            }, secondsDelayed * 2000);
-        } else {
-//            YoYo.with(Techniques.StandUp)
-//                    .duration(3000)
-//                    .repeat(0)
-//                    .playOn(findViewById(R.id.tv_splash_activity_title));
-
-            int secondsDelayed = 2;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(SplashScreen.this, LoginActivity.class));
-                    finish();
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                }
-            }, secondsDelayed * 2000);
+        // Check network connection when returning to the app
+        if (networkErrorDialog != null && networkErrorDialog.isShowing() && isNetworkAvailable()) {
+            networkErrorDialog.dismiss();
+            checkForUpdates();
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-    private void showServerDialog(String versionName, String versionCode, String updateMessage, Boolean flag) {
-        Dialog customDialog = new Dialog(SplashScreen.this);
-        customDialog.setContentView(R.layout.update_available_layout);
-        customDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        customDialog.setCancelable(false);
-
-        TextView versionNameTextView = customDialog.findViewById(R.id.VersionName); // Replace with actual ID
-        TextView versionCodeTextView = customDialog.findViewById(R.id.VersionCode); // Replace with actual ID
-        Button updateButton = customDialog.findViewById(R.id.btn_update);
-        Button UpdateLater = customDialog.findViewById(R.id.btn_update_later);
-        TextView tv_update_title = customDialog.findViewById(R.id.tv_latest_features);
-        //TextView testt = customDialog.findViewById(R.id.testt); // Replace with actual ID
-        if (flag) {
-            UpdateLater.setVisibility(View.VISIBLE);
-        } else {
-            UpdateLater.setVisibility(View.GONE);
-            // UpdateLater.setVisibility(View.VISIBLE);
+        // Clean up resources
+        if (networkErrorDialog != null && networkErrorDialog.isShowing()) {
+            networkErrorDialog.dismiss();
         }
-        Log.e("updateMessage4", "" + updateMessage);
-        tv_update_title.setText("" + updateMessage);
-        versionNameTextView.setText("" + versionName);
-        versionCodeTextView.setText("" + versionCode);
-        tv_update_title.setVisibility(View.VISIBLE);
-        Log.e("updateMessage34", "" + tv_update_title.getText().toString());
-        UpdateLater.setOnClickListener(v -> {
-            // Handle the update button click
-            customDialog.dismiss();
-            startActivity(new Intent(SplashScreen.this, LoginActivity.class));
-            finish();
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-        });
-
-
-        updateButton.setOnClickListener(v -> {
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse((Uri.parse("market://details?id=") + getPackageName()))));
-            } catch (Exception e) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Uri.parse("https://play.google.com/store/apps/details?id=") + getPackageName())));
-            }
-
-        });
-
-        customDialog.show();
     }
-
-
 }
