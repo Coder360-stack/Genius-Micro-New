@@ -8,9 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.geniousmicro.Adapter.AdminLoanDueReportAdapter;
-import com.example.geniousmicro.Models.UtilityModels.AdminLoanDueReportModel;
-import com.example.geniousmicro.UserData.GlobalUserData;
 import com.example.geniousmicro.mssql.SqlManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -28,14 +25,11 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -51,7 +45,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -61,22 +54,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.geniousmicro.LoginActivity;
 import com.example.geniousmicro.R;
 import com.example.geniousmicro.databinding.ActivityAdminDashboardBinding;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class AdminDashboardActivity extends AppCompatActivity implements View.OnClickListener {
     private BarChart barChart;
@@ -452,6 +430,11 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             startActivity(intent);
         }
 
+        else if (view==binding.policyCollReport) {
+            Intent intent=new Intent(getApplicationContext(), PolicyCollectionReportAdminActivity.class);
+            startActivity(intent);
+        }
+
 
     }
 
@@ -513,6 +496,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
               binding.applyFilterButton.setOnClickListener(this);
               binding.empdetails.setOnClickListener(this);
               binding.TodayPolicyColl.setOnClickListener(this);
+              binding.policyCollReport.setOnClickListener(this);
 
 
 

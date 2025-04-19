@@ -452,6 +452,11 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
             startActivity(intent);
         }
 
+        else if (view==binding.policyCollReport) {
+            Intent intent=new Intent(getApplicationContext(),AdminPolicyCollectionReportActivity.class);
+            startActivity(intent);
+        }
+
 
     }
 
@@ -512,6 +517,8 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
               Todate.setOnClickListener(this);
               binding.applyFilterButton.setOnClickListener(this);
               binding.empdetails.setOnClickListener(this);
+              binding.TodayPolicyColl.setOnClickListener(this);
+              binding.policyCollReport.setOnClickListener(this);
 
 
 
