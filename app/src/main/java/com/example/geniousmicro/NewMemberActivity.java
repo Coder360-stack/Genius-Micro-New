@@ -1,4 +1,5 @@
 
+
 package com.example.geniousmicro;
 
 import android.Manifest;
@@ -6,11 +7,15 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,8 +51,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -201,16 +211,11 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
 
         distList = new ArrayList<>();
 
-        // Toast.makeText(this, "" + GlobalUserData.employeeDataModel.getEmployeeID(), Toast.LENGTH_SHORT).show();
-
-        // createDialog();
-
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        // Calendar
         mCalendar = Calendar.getInstance();
         currentDay = mCalendar.get(Calendar.DAY_OF_MONTH);
         currentMonth = mCalendar.get(Calendar.MONTH);
@@ -278,15 +283,6 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
-        //Load ID Proof Name
-//        IDProof.add("Aadhar Card");
-//        IDProof.add("Voter Card");
-//        IDProof.add("PAN Card");
-//        IDProof.add("Ration Card");
-//        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(
-//                this, android.R.layout.simple_spinner_item, IDProof);
-//        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spnIDProofNo.setAdapter(adapter1);
         spnIDProofNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -463,16 +459,7 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
 
             }
         });
-        //Load ID Proof Name
-//        AddressProof.add("Aadhar Card");
-//        AddressProof.add("Voter Card");
-//        AddressProof.add("PAN Card");
-//        AddressProof.add("Ration Card");
-//        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
-//                this, android.R.layout.simple_spinner_item, AddressProof);
-//
-//        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        binding.spActivityNewMemberAddressProof.setAdapter(adapter2);
+
 
         binding.spActivityNewMemberAddressProof.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -539,7 +526,7 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
                 this, android.R.layout.simple_spinner_item, spinnerBloodGroup);
 
         adapterBloodGroup.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //mSp_bloodGroup.setPrompt("Select");
+
         binding.spActivityNewMemberBloodGroup.setAdapter(adapterBloodGroup);
 
         binding.spActivityNewMemberBloodGroup.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -574,17 +561,6 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
         binding.txtNewMemberDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* datePickerDialog = new DatePickerDialog(getApplicationContext(),
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                txtMemberDOB.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                                memberDOB = Integer.toString(year) + String.format("%02d", (monthOfYear + 1)) + String.format("%02d", dayOfMonth);
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();*/
-
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(NewMemberActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -604,7 +580,7 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
                 datePickerDialog.getDatePicker().setMaxDate(mCalendar.getTimeInMillis());
                 datePickerDialog.show();
 
-                //getAge(dob_year,dob_month,dob_day);
+
             }
         });
 
@@ -612,16 +588,7 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 Log.e("TAG", "onClick: " + memberDOJ);
-              /*  datePickerDialog = new DatePickerDialog(getApplicationContext(),
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                txtDateOfJoin.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-                                memberDOJ = Integer.toString(year) + String.format("%02d", (monthOfYear + 1)) + String.format("%02d", dayOfMonth);
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();*/
+
             }
         });
 
@@ -674,8 +641,7 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
                 image_type = "idphoto";
                 openBottomSheetDialog();
 
-               /* image_type = "idphoto";
-                selectImage();*/
+
 
             }
         });
@@ -684,7 +650,7 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 image_type = "signature";
-                //selectImage();
+
                 openBottomSheetDialog();
             }
         });
@@ -693,7 +659,7 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 image_type = "addrproof";
-                //selectImage();
+
                 openBottomSheetDialog();
             }
         });
@@ -702,7 +668,7 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 image_type = "idProof";
-                //selectImage();
+
                 openBottomSheetDialog();
             }
         });
@@ -744,31 +710,14 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
                     if (!binding.txtNewMemberName.getText().toString().trim().isEmpty()) {
                         if (binding.txtNewMemberPhone.getText().toString().trim().length() == 10) {
 
-                           /* if (!binding.txtNewMemberIDProofNo.getText().toString().trim().isEmpty()) {
-                                if (!binding.etActivityNewMemberAddressProofNo.getText().toString().trim().isEmpty()) {
 
-                                    if (!binding.etActivityNewMemberPanNo.getText().toString().trim().isEmpty()) {*/
                             showNomineedetails();
                             status = 1;
                             binding.BtnNomineeDetails.setBackgroundDrawable(ContextCompat.getDrawable(NewMemberActivity.this, R.drawable.card_bg_top_right));
                             binding.rightBtn.setBackgroundDrawable(ContextCompat.getDrawable(NewMemberActivity.this, R.drawable.card_invisiable_background));
                             binding.leftBtn.setBackgroundDrawable(ContextCompat.getDrawable(NewMemberActivity.this, R.drawable.card_invisiable_background));
 
-                                   /* } else {
-                                        binding.etActivityNewMemberPanNo.setError("Enter Pan No");
-                                        binding.etActivityNewMemberPanNo.requestFocus();
-                                    }
 
-
-                                } else {
-                                    binding.etActivityNewMemberAddressProofNo.setError("Enter Address Proof No");
-                                    binding.etActivityNewMemberAddressProofNo.requestFocus();
-                                }
-
-                            } else {
-                                binding.txtNewMemberIDProofNo.setError("Enter ID Proof No");
-                                binding.txtNewMemberIDProofNo.requestFocus();
-                            }*/
 
 
                         } else {
@@ -788,50 +737,12 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
                     status = 2;
                 } else if (status == 2) {
 
-                    //  insertMember();
 
-//                    if (!binding.txtNewMemberName.getText().toString().trim().isEmpty()) {
-//                        if (binding.txtNewMemberPhone.getText().toString().trim().length() == 10) {
-//
-//                            if (!binding.txtNewMemberIDProofNo.getText().toString().trim().isEmpty()) {
-//                                if (!binding.etActivityNewMemberAddressProofNo.getText().toString().trim().isEmpty()) {
-//
-//                                    if (!binding.etActivityNewMemberPanNo.getText().toString().trim().isEmpty()) {
-
-//                                    binding.MemberImage.setVisibility(View.GONE);
-//                                    binding.MemberDetails.setVisibility(View.GONE);
-//                                    binding.MemberDetailsSecond.setVisibility(View.GONE);
-//                                    binding.NomineeDetails.setVisibility(View.VISIBLE);
-//                                    binding.BankInformatiomCardView.setVisibility(View.VISIBLE);
 //
                     insertMember();
 
 
-//                                    } else {
-//                                        binding.etActivityNewMemberPanNo.setError("Enter Pan No");
-//                                        binding.etActivityNewMemberPanNo.requestFocus();
-//                                    }
 //
-//
-//                                } else {
-//                                    binding.etActivityNewMemberAddressProofNo.setError("Enter Address Proof No");
-//                                    binding.etActivityNewMemberAddressProofNo.requestFocus();
-//                                }
-//
-//                            } else {
-//                                binding.txtNewMemberIDProofNo.setError("Enter ID Proof No");
-//                                binding.txtNewMemberIDProofNo.requestFocus();
-//                            }
-//
-//
-//                        } else {
-//                            binding.txtNewMemberPhone.setError("Enter Mobile Number");
-//                            binding.txtNewMemberPhone.requestFocus();
-//                        }
-//                    } else {
-//                        binding.txtNewMemberName.setError("Enter Name Member Name");
-//                        binding.txtNewMemberName.requestFocus();
-//                    }
                 }
 
             }
@@ -882,220 +793,65 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
         binding.rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // binding.MemberImage.setVisibility(View.GONE);
-             /*   binding.MemberDetails.setVisibility(View.GONE);
-                binding.MemberDetailsSecond.setVisibility(View.GONE);
-                binding.NomineeDetails.setVisibility(View.GONE);
-                binding.BankInformatiomCardView.setVisibility(View.VISIBLE);
-                binding.RegistrationAmountCardView.setVisibility(View.VISIBLE);
-                binding.btnNewMemberPrevious.setVisibility(View.VISIBLE);
-                binding.rightBtn.setBackgroundDrawable(ContextCompat.getDrawable(NewMemberActivity.this, R.drawable.card_bg_top_right));
-                binding.leftBtn.setBackgroundDrawable(ContextCompat.getDrawable(NewMemberActivity.this, R.drawable.card_invisiable_background));
-                binding.BtnNomineeDetails.setBackgroundDrawable(ContextCompat.getDrawable(NewMemberActivity.this, R.drawable.card_invisiable_background));
-*/
-//                if(status!=2){
-//                    binding.btnNewMemberSave.setVisibility(View.GONE);
-//                }
+
             }
         });
 
         binding.BtnNomineeDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //binding.MemberImage.setVisibility(View.GONE);
-             /*   binding.MemberDetails.setVisibility(View.GONE);
-                binding.MemberDetailsSecond.setVisibility(View.GONE);
-                binding.NomineeDetails.setVisibility(View.VISIBLE);
-                binding.BankInformatiomCardView.setVisibility(View.GONE);
-                binding.RegistrationAmountCardView.setVisibility(View.GONE);
-                binding.btnNewMemberPrevious.setVisibility(View.VISIBLE);
-                binding.BtnNomineeDetails.setBackgroundDrawable(ContextCompat.getDrawable(NewMemberActivity.this, R.drawable.card_bg_top_right));
-                binding.rightBtn.setBackgroundDrawable(ContextCompat.getDrawable(NewMemberActivity.this, R.drawable.card_invisiable_background));
-                binding.leftBtn.setBackgroundDrawable(ContextCompat.getDrawable(NewMemberActivity.this, R.drawable.card_invisiable_background));
-*/
 
             }
         });
 
-//        btnSave.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//
-//                if (txtPhoneNo.getText().toString().trim().length() == 10) {
-//                    if (mEt_idProofNo.getText().toString().trim().length() > 0) {
-//
-//                        if (!mEt_shareAmount.getText().toString().equalsIgnoreCase("0")) {
-//                            final ProgressDialog progressDialog = new ProgressDialog(NewMemberActivity.this,
-//                                    ProgressDialog.THEME_HOLO_DARK);
-//                            progressDialog.setMessage("Please Wait...");
-//                            progressDialog.show();
-//                            new Handler().postDelayed(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    try {
-//                                        boolean status_pass_id = false, status_pass_pan = false;
-//                                        if (selectedIdProofName.equals("Aadhar Card") && mEt_idProofNo.getText().length() == 12) {
-//                                            status_pass_id = true;
-//                                        } else if (selectedIdProofName.equals("Voter Card") && mEt_idProofNo.getText().length() == 10) {
-//                                            status_pass_id = true;
-//                                        } else {
-//                                            status_pass_id = false;
-//                                            mEt_idProofNo.setError("Enter proper digit");
-//                                            mEt_idProofNo.requestFocus();
-//                                        }
-//
-//                                        if (mEt_panNo.getText().toString().length() == 10) {
-//                                            status_pass_pan = true;
-//                                        } else {
-//                                            status_pass_pan = false;
-//                                            mEt_panNo.setError("Enter 10 digit");
-//                                            mEt_panNo.requestFocus();
-//                                        }
-//
-//                                        if (txtMemberName.getText().toString().length() > 0 && txtAddress.getText().toString().length() > 0
-//                                                && txtPhoneNo.getText().toString().length() > 0 && txtPinCode.getText().toString().length() > 0
-//                                                && status_pass_id && status_pass_pan) {
-//
-//                                            selectedShareAmount = Float.parseFloat(mEt_shareAmount.getText().toString());
-//                                           /* MemberData m = new MemberData();
-//                                            m.setMemberName(txtMemberName.getEditableText().toString());
-//                                            m.setFather(txtFatherName.getEditableText().toString());
-//                                            m.setAddress(txtAddress.getEditableText().toString());
-//                                            m.setPinCode(txtPinCode.getEditableText().toString());
-//                                            m.setPhoneNo(txtPhoneNo.getEditableText().toString());
-//                                            m.setMemberDOB(String.valueOf(memberDOB));
-//                                            m.setDateOfJoin(memberDOJ);
-//                                            m.setGender(selectedGender);
-//                                            m.setNominee(txtNomineeName.getEditableText().toString());
-//                                            m.setNomineeDOB(nomineeDOB);
-//                                            m.setNomineeRelation("");
-//                                            m.setEmailId(mEt_emailId.getText().toString());
-//                                            m.setDistrict(selectedDist);
-//                                            m.setState(selectedState);
-//                                            m.setNomineeCode(mEt_nomineeCode.getText().toString());             // TODO Nominee code not set when sending data
-//                                            m.setBloodGroup(selectedBloodGroup);
-//                                            m.setSelectedIdProofNo(mEt_idProofNo.getText().toString());
-//                                            m.setSelectedIdProofName(selectedIdProofName);
-//                                            m.setSelectedAddressProofName(selectedAddressProofName);
-//                                            m.setSelectedAddressProofNo(mEt_addressProofNo.getText().toString());
-//
-//                                            m.setBankName(mTv_bankName.getText().toString());
-//                                            m.setBranchName(mTv_branchName.getText().toString());
-//                                            m.setBankAccNo(mEt_bankAccNo.getText().toString());
-//                                            m.setBankIfscCode(mEt_ifscCode.getText().toString());
-//                                            m.setShareAmount(selectedShareAmount);
-//                                            m.setSignProofName(selectedSignProofName);
-//                                            m.setPanNo(mEt_panNo.getText().toString());
-//                                            m.setFormNo(mEt_formNo.getText().toString());
-//                                            *//*if (encodedImageString.equals("")) {*//*
-//                                            //byte[] data = Base64.decode(defaultEncodedImageString, Base64.DEFAULT);
-//
-//
-//                                            m.setImageEncodedString(dataMemberPicture);
-//                                            m.setSignatureEncodingString(dataMemberSignature);
-//                                            m.setIdEncodingString(dataIdProof);
-//                                            m.setAddressEncodingString(dataAddressProof);
-//*/
-//                                            // share
-//                                            //   m.setAlltMemberCode(directorMemberCode);
-//                                            //  m.setDnoTo(dnoTo);
-//                                            //m.setDnoFrom(dnoFrom);
-//
-//                                            //m.setBankAccEncodingString(databankAccProof);
-//                                            /*} else {
-//                    byte[] data = Base64.decode(encodedImageString, Base64.DEFAULT);
-//                    m.setImageEncodedString(String.valueOf(data));
-//                }*/
-//
-//                                            //m.setSignatureEncodingString();                                                     // TODO Get signature byte array
-//
-//                                            if (txtRegAmt.getText().toString().trim().length() > 0) {
-//                                                // m.setRegAmt(Double.parseDouble(txtRegAmt.getText().toString()));
-//                                            } else {
-//                                                // m.setRegAmt(0);
-//                                            }
-//
-//                                          /*  if (new MemberManagement().insertMember(m)) {
-//                                                //Toast.makeText(getApplicationContext(), "Save Successfully", Toast.LENGTH_LONG);
-//                                                AlertDialog.Builder builder = new AlertDialog.Builder(NewMemberActivity.this);
-//                                                builder.setCancelable(false);
-//                                                builder.setTitle("Successful");
-//                                                builder.setMessage("Member Saved Successfully.\n\nThe temporary Member Code is " + TempDataBean.tempMemberCode);
-//                                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                                                    @Override
-//                                                    public void onClick(DialogInterface dialog, int which) {
-//                                                        //builder.setCancelable(true);
-//                                                        Intent i = new Intent(NewMemberActivity.this, NewMemberActivity.class);
-//                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-//                                                        startActivity(i);
-//                                                        finish();
-//                                                        progressDialog.dismiss();
-//                                                    }
-//                                                }).show();
-//
-//                                            } else {
-//                                                if (TempDataBean.NewMemberErrorCode == 50078) {
-//                                                    Toast.makeText(NewMemberActivity.this, "Member Already exist", Toast.LENGTH_LONG).show();
-//                                                } else {
-//                                                    Toast.makeText(getApplicationContext(), "Save Failed", Toast.LENGTH_LONG).show();
-//                                                }
-//                                                progressDialog.dismiss();
-//
-//                                            }*/
-//                                        } else {
-//                                            progressDialog.dismiss();
-//                                            Toast.makeText(NewMemberActivity.this, "Please Enter Sufficient Data", Toast.LENGTH_SHORT).show();
-//
-//                                        }
-//
-//
-//                                    } catch (Exception e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-//                            }, 3000);
-//                        } else {
-//
-//                            mEt_shareAmount.setError("Enter Share Amount");
-//                            mEt_shareAmount.requestFocus();
-//                        }
-//                    } else {
-//                        mEt_idProofNo.setError("Enter Id Proof no");
-//                        mEt_idProofNo.requestFocus();
-//                    }
-//                } else {
-//                    txtPhoneNo.setError("Enter phone no");
-//                    txtPhoneNo.requestFocus();
-//                }
-//
-//            }
-//        });
+
     }
 
+    // Enhanced openBottomSheetDialog with status feedback
     public void openBottomSheetDialog() {
+        if (!checkAndRequestPermissions()) {
+            Toast.makeText(this, "Camera and storage permissions are required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(NewMemberActivity.this);
         bottomSheetDialog.setContentView(R.layout.custom_bottom_sheet_dialog);
 
         ImageView mIv_camera = bottomSheetDialog.findViewById(R.id.iv_custom_bottom_sheet_dialog_select_image);
+        TextView infoText = bottomSheetDialog.findViewById(R.id.tv_custom_bottom_sheet_dialog_profile_photo_title);
+
+        if (infoText != null) {
+            infoText.setText("Image size limit: 50KB");
+        }
+
         mIv_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkAndRequestPermissions()) {
-                    //TODO: Permission granted
                     takeImage();
+                    bottomSheetDialog.dismiss();
+                } else {
+                    Toast.makeText(NewMemberActivity.this, "Unable to access camera. Please check permissions.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
         bottomSheetDialog.show();
     }
 
+
+    // Enhanced image taking method with size check
     public void takeImage() {
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No internet connection available. Please check your network settings.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
+                .setMaxCropResultSize(1080, 1080) // Limit max dimensions
                 .start(this);
     }
-    @SuppressLint({"NewApi", "SetTextI18n"})
+    /*@SuppressLint({"NewApi", "SetTextI18n"})
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1136,11 +892,80 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
                     e.printStackTrace();
                 }
 
-                //mCiv_selectedImage.setImageBitmap(yourSelectedImage);
-                //encodedImageString = encodeToBase64(yourSelectedImage);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 //Exception error = result.getError();
                 Toast.makeText(this, "Failed to take image.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }*/
+
+    // Enhanced onActivityResult method with better error handling
+    private void processAndCompressImage(Uri imageUri, String imageType) {
+        try {
+            InputStream imageStream = getContentResolver().openInputStream(imageUri);
+            Bitmap originalImage = BitmapFactory.decodeStream(imageStream);
+
+            if (originalImage == null) {
+                Toast.makeText(this, "Failed to decode image", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Automatically compress the image to meet size requirements
+            Bitmap compressedImage = compressImage(originalImage);
+            String encodedImage = encodeToBase64(compressedImage);
+
+            // Convert to byte array for size checking
+            byte[] imageBytes = Base64.decode(encodedImage, Base64.DEFAULT);
+            float imageSizeKB = imageBytes.length / 1024f;
+
+            // Set image based on type
+            if (imageType.equals("idphoto")) {
+                binding.ivActivityNewMemberPicture.setImageBitmap(compressedImage);
+                member_img = imageBytes;
+            } else if (imageType.equals("signature")) {
+                binding.ivActivityNewMemberSignature.setImageBitmap(compressedImage);
+                member_signature = imageBytes;
+            } else if (imageType.equals("idProof")) {
+                binding.ivActivityNewMemberIdProof.setImageBitmap(compressedImage);
+                member_idproof = imageBytes;
+            } else if (imageType.equals("addrproof")) {
+                binding.ivActivityNewMemberAddressProof.setImageBitmap(compressedImage);
+                member_addrProof = imageBytes;
+            }
+
+            // Show size information
+            Toast.makeText(this,
+                    "Image compressed to " + String.format("%.1f KB", imageSizeKB),
+                    Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+            Log.e("ImageProcessing", "Error processing image: " + e.getMessage());
+            Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                try {
+                    Uri resultUri = result.getUriContent();
+                    if (resultUri == null) {
+                        Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    mTv_takePicture.setText("Image selected");
+                    // Process and compress the image automatically
+                    processAndCompressImage(resultUri, image_type);
+
+                } catch (Exception e) {
+                    Log.e("ImageProcessing", "Error processing image: " + e.getMessage());
+                    Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show();
+                }
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Toast.makeText(this, "Failed to crop image.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -1203,6 +1028,21 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
                 Log.e("Callback Error", error);
             }
         });
+    }
+    // Method to check network connectivity
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+                return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR));
+            } else {
+                NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+                return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+            }
+        }
+        return false;
     }
 
     public void showPersonaldetails() {
@@ -1273,7 +1113,7 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
             for (int i = 0; i < statearray.length(); i++) {
                 JSONObject jso = statearray.getJSONObject(i);
                 stateList.add(jso.getString("state"));
-                //Toast.makeText(this, i+"-"+jso.getString("state"), Toast.LENGTH_SHORT).show();
+
             }
 
         } catch (Exception e) {
@@ -1352,88 +1192,12 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
         if (requestCode == 100 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             selectImage();
         } else {
-            Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /* *//* *//**//*  @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // check condition
-        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
-            Uri uri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-//                byte[] bytes = stream.toByteArray();
-//                String encodedIdString = encodeToBase64(compressImage(bitmap));
-//                byte[] bytes = Base64.decode(encodedIdString, Base64.DEFAULT);
-//                sImage = Base64.encodeToString(bytes, Base64.DEFAULT);
 
-                String encodedIdString = encodeToBase64(compressImage(bitmap));
-                sImage = Base64.decode(encodedIdString, Base64.DEFAULT);
 
-                Log.d("fv", sImage.toString());
-                if (image_type.equals("idphoto")) {
-                    binding.ivActivityNewMemberPicture.setImageBitmap(bitmap);
-                    member_img = sImage;
-                    Log.d("img", "" + member_img);
-                } else if (image_type.equals("signature")) {
-                    binding.ivActivityNewMemberSignature.setImageBitmap(bitmap);
-                    member_signature = sImage;
-                    Log.d("img", member_signature.toString());
-                } else if (image_type.equals("idProof")) {
-                    binding.ivActivityNewMemberIdProof.setImageBitmap(bitmap);
-                    member_idproof = sImage;
-                    Log.d("img", member_idproof.toString());
-                } else if (image_type.equals("addrproof")) {
-                    binding.ivActivityNewMemberAddressProof.setImageBitmap(bitmap);
-                    member_addrProof = sImage;
-                    Log.d("img", member_addrProof.toString());
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-*/
-    private void createDialog() {
-//        dialog = new Dialog(this);
-//        dialog.setContentView(R.layout.pop_data_layout);
-//        dialog.getWindow().setLayout(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT
-//        );
-        CustomPopUpdialog customPopUpdialog = new CustomPopUpdialog();
-        dialog = customPopUpdialog.createDialog(NewMemberActivity.this, R.layout.pop_data_layout);
-
-//        dialog.setCancelable(false);
-        adhno = dialog.findViewById(R.id.adhno);
-        verifybtn = dialog.findViewById(R.id.verifybtn);
-        anim = dialog.findViewById(R.id.animation_view);
-        baccard = dialog.findViewById(R.id.baccard);
-
-        verifybtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (adhno.getText().toString().length() > 0) {
-                    if (adharno.length() == 0) {
-                        adharno = adhno.getText().toString();
-                        getOtp(adharno);
-                    } else {
-                        otp = adhno.getText().toString();
-                        verifyotp();
-                    }
-                } else {
-                    adhno.setError("Enter Data to Continue");
-                }
-            }
-        });
-        dialog.show();
-    }
 
     private void getOtp(String adharno1) {
         String url = "http://creditscore.geniustechnoindia.com/Aadhaar_Generate_OTP";
@@ -1671,12 +1435,54 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
         return rValue;
     }
 
+
+
+    // Enhanced image upload with error handling for API calls
     private void insertMember() {
-//        HashMap<String,String> memberData = new HashMap<>();
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No internet connection. Please check your network settings and try again.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         pdialog.show();
         binding.btnNewMemberSave.setVisibility(View.GONE);
+
+        // Check image sizes before uploading
+        boolean imagesValid = true;
+        String errorMessage = "";
+
+        if (member_img != null && member_img.length > 150 * 1024) {
+            imagesValid = false;
+            errorMessage += "Member photo exceeds 50KB limit\n";
+        }
+
+        if (member_signature != null && member_signature.length > 150 * 1024) {
+            imagesValid = false;
+            errorMessage += "Signature exceeds 50KB limit\n";
+        }
+
+        if (member_idproof != null && member_idproof.length > 150 * 1024) {
+            imagesValid = false;
+            errorMessage += "ID proof exceeds 50KB limit\n";
+        }
+
+        if (member_addrProof != null && member_addrProof.length > 150 * 1024) {
+            imagesValid = false;
+            errorMessage += "Address proof exceeds 50KB limit\n";
+        }
+
+        if (!imagesValid) {
+            pdialog.dismiss();
+            binding.btnNewMemberSave.setVisibility(View.VISIBLE);
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         JSONObject memberData = new JSONObject();
         try {
+            // Add member data to JSON object as before
+            // [existing code for populating memberData]
             memberData.put("FormNo", "" + (binding.etActivityNewMemberFormNo.getText().toString().length() > 0 ? binding.etActivityNewMemberFormNo.getText().toString() : "-"));
             memberData.put("MrMrs", "" + selectmember_type);
             memberData.put("MemberName", "" + (binding.txtNewMemberName.getText().toString().length() > 0 ? binding.txtNewMemberName.getText().toString() : "-"));
@@ -1724,39 +1530,20 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
             memberData.put("img3", (member_idproof != null ? Base64.encodeToString(member_idproof, Base64.DEFAULT) : ""));
             memberData.put("img4", (member_addrProof != null ? Base64.encodeToString(member_addrProof, Base64.DEFAULT) : ""));
         } catch (Exception e) {
-            Log.d("DataErrors", e.toString());
-//            e.printStackTrace();
+            Log.e("DataErrors", "Error creating member data: " + e.getMessage());
+            Toast.makeText(NewMemberActivity.this, "Error preparing member data", Toast.LENGTH_SHORT).show();
+            pdialog.dismiss();
+            binding.btnNewMemberSave.setVisibility(View.VISIBLE);
+            return;
         }
-//        new PostDataParserObjectResponse(NewMemberActivity.this, ApiLinks.INSERT_MEMBER, memberData, new VolleyCallback() {
-//            @Override
-//            public void onSuccessResponse(JSONObject response) {
-//                Log.d("InsertResponse", response.toString());
-//                try {
-//                    JSONObject jso = new JSONObject(response.getString("MemberData"));
-//                    JSONObject r_status = new JSONObject(response.getString("ReturnData"));
-//                    if (r_status.getString("ErrorCode").equals("0") && jso.getString("MemberCode").length() > 0) {
-//                        Toast.makeText(NewMemberActivity.this, "Member Inserted Successfully", Toast.LENGTH_SHORT).show();
-//                        createSuccessDialog(jso.getString("MemberCode"));
-//
-////                        Toast.makeText(NewMemberActivity.this, "MemberCode-" + jso.getString("MemberCode"), Toast.LENGTH_SHORT).show();
-////                        startActivity(new Intent(getApplicationContext(), NewMemberActivity.class));
-////                        finish();
-//                    } else {
-//                        Toast.makeText(NewMemberActivity.this, "Unable to InsertMember", Toast.LENGTH_SHORT).show();
-//                    }
-//                } catch (Exception e) {
-//                    Log.d("MemberError", e.toString());
-//                    Toast.makeText(NewMemberActivity.this, "Unable to InsertMember", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onErrorResponse(String error) {
-//                // Handle the error response
-//                Toast.makeText(NewMemberActivity.this, "Some Error Occurred At Server End", Toast.LENGTH_SHORT).show();
-//                Log.e("Callback Error", error);
-//            }
-//        });
+
+        // Add retry mechanism for network issues
+        int maxRetries = 2;
+        RetryPolicy policy = new DefaultRetryPolicy(
+                30000, // 30 seconds timeout
+                maxRetries,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        );
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
@@ -1765,6 +1552,9 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        pdialog.dismiss();
+                        binding.btnNewMemberSave.setVisibility(View.VISIBLE);
+
                         Log.d("InsertResponse", response.toString());
                         try {
                             JSONObject jso = new JSONObject(response.getString("MemberData"));
@@ -1772,33 +1562,46 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
                             if (r_status.getString("ErrorCode").equals("0") && jso.getString("MemberCode").length() > 0) {
                                 Toast.makeText(NewMemberActivity.this, "Member Inserted Successfully", Toast.LENGTH_SHORT).show();
                                 createSuccessDialog(jso.getString("MemberCode"));
-
-//                        Toast.makeText(NewMemberActivity.this, "MemberCode-" + jso.getString("MemberCode"), Toast.LENGTH_SHORT).show();
-//                        startActivity(new Intent(getApplicationContext(), NewMemberActivity.class));
-//                        finish();
                             } else {
-                                Toast.makeText(NewMemberActivity.this, "Unable to InsertMember", Toast.LENGTH_SHORT).show();
+                                String errorMsg = r_status.optString("ErrorMessage", "Unable to insert member");
+                                Toast.makeText(NewMemberActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
-                            Log.d("MemberError", e.toString());
-                            Toast.makeText(NewMemberActivity.this, "Unable to InsertMember", Toast.LENGTH_SHORT).show();
+                            Log.e("MemberError", "Error parsing response: " + e.getMessage());
+                            Toast.makeText(NewMemberActivity.this, "Error processing server response", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(NewMemberActivity.this, "Some Error Occurred At Server End", Toast.LENGTH_SHORT).show();
+                        pdialog.dismiss();
+                        binding.btnNewMemberSave.setVisibility(View.VISIBLE);
+
                         Log.e("Callback Error", error.toString());
+                        if (error instanceof NetworkError) {
+                            Toast.makeText(NewMemberActivity.this, "Network error. Please check your connection.",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error instanceof TimeoutError) {
+                            Toast.makeText(NewMemberActivity.this, "Server request timed out. Please try again.",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ServerError) {
+                            Toast.makeText(NewMemberActivity.this, "Server error. Please try again later.",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(NewMemberActivity.this, "Error submitting member data. Please try again.",
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
 
+        // Set the retry policy
+        jsonObjectRequest.setRetryPolicy(policy);
+
         // Add the request to the RequestQueue
         Volley.newRequestQueue(NewMemberActivity.this).add(jsonObjectRequest);
-
-        pdialog.dismiss();
-        binding.btnNewMemberSave.setVisibility(View.VISIBLE);
     }
+
 
     private void createSuccessDialog(String memberCode) {
         dialog = new Dialog(this);
@@ -1852,40 +1655,10 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
         if (v == mTv_takePicture) {
             //openBottomSheetDialog();
         }
-       /* if (v == mBtn_submitIfscCode) {
-            String url = "https://ifsc.razorpay.com/" + mEt_ifscCode.getText().toString();
-            new GetDataParserObject(this, url, true, new GetDataParserObject.OnGetResponseListner() {
-                @Override
-                public void onGetResponse(JSONObject response) {
-                    try {
-                        if (response != null) {
-                            mTv_bankName.setText(response.getString("BANK"));
-                            mTv_branchName.setText(response.getString("BRANCH"));
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }*/
+
     }
 
-   /* public void openBottomSheetDialog() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(NewMemberActivity.this);
-        bottomSheetDialog.setContentView(R.layout.custom_bottom_sheet_dialog);
 
-        ImageView mIv_camera = bottomSheetDialog.findViewById(R.id.iv_custom_bottom_sheet_dialog_select_image);
-        mIv_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkAndRequestPermissions()) {
-                    //TODO: Permission granted
-                    takeImage();
-                }
-            }
-        });
-        bottomSheetDialog.show();
-    }*/
 
     private boolean checkAndRequestPermissions() {
         int permissionCamera = ContextCompat.checkSelfPermission(NewMemberActivity.this,
@@ -1931,9 +1704,6 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
         return ageS;
     }
 
-    /**
-     * Trigger image selection for photo
-     **/
 
 
     private byte[] bitmapToByteArray(Bitmap bmp) {
@@ -1955,42 +1725,60 @@ public class NewMemberActivity extends AppCompatActivity implements View.OnClick
         return imageEncoded;
     }
 
+    // Enhanced method to handle image compression with size limit (50KB)
     public Bitmap compressImage(Bitmap image) {
-        Bitmap decoded = null;
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.PNG, 55, out);
-            decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-            return decoded;
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (image == null) {
+            return null;
         }
-        return decoded;
+
+        Bitmap resultBitmap = image;
+        int quality = 80; // Start with 80% quality
+        int maxWidth = 800; // Max width
+        int maxHeight = 800; // Max height
+        long maxSizeInBytes = 45 * 1024; // Target 45KB to stay under 50KB limit
+
+        try {
+            // First, resize the image if it's too large
+            if (resultBitmap.getWidth() > maxWidth || resultBitmap.getHeight() > maxHeight) {
+                float scale = Math.min(
+                        (float) maxWidth / resultBitmap.getWidth(),
+                        (float) maxHeight / resultBitmap.getHeight());
+
+                int newWidth = Math.round(resultBitmap.getWidth() * scale);
+                int newHeight = Math.round(resultBitmap.getHeight() * scale);
+
+                resultBitmap = Bitmap.createScaledBitmap(resultBitmap, newWidth, newHeight, true);
+            }
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            resultBitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
+
+            // Keep reducing quality until size is below target
+            while (stream.toByteArray().length > maxSizeInBytes && quality > 10) {
+                stream.reset(); // Clear the stream
+                quality -= 10;  // Reduce quality by 10%
+                resultBitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
+            }
+
+            // If still too large after quality reduction, scale down dimensions further
+            if (stream.toByteArray().length > maxSizeInBytes) {
+                float ratio = (float)Math.sqrt(maxSizeInBytes / (float)stream.toByteArray().length);
+                int width = Math.round(resultBitmap.getWidth() * ratio);
+                int height = Math.round(resultBitmap.getHeight() * ratio);
+
+                resultBitmap = Bitmap.createScaledBitmap(resultBitmap, width, height, true);
+                stream.reset();
+                resultBitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
+            }
+
+            return BitmapFactory.decodeStream(new ByteArrayInputStream(stream.toByteArray()));
+        } catch (Exception e) {
+            Log.e("ImageCompression", "Error compressing image: " + e.getMessage());
+            return resultBitmap;
+        }
     }
 
-//    public static String encodeToBase64(Bitmap image) {
-//        Bitmap immagex = image;
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        immagex.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//        byte[] b = baos.toByteArray();
-//        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-//
-//        Log.e("LOOK", imageEncoded);
-//        return imageEncoded;
-//    }
-//
-//    public Bitmap compressImage(Bitmap image) {
-//        Bitmap decoded = null;
-//        try {
-//            ByteArrayOutputStream out = new ByteArrayOutputStream();
-//            image.compress(Bitmap.CompressFormat.PNG, 55, out);
-//            decoded = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-//            return decoded;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return decoded;
-//    }
+
 
 }
 

@@ -175,7 +175,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         barChart = findViewById(R.id.barChart);
         pieChart = findViewById(R.id.pieChart);
 
-
+           binding.userCode.setText(""+GlobalUserData.adminDataModel.getAdminID());
         getOfficeDetails();
         CurrentDate();
         Fromdate.setOnClickListener(new View.OnClickListener() {
