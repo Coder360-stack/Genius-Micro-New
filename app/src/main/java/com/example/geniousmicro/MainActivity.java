@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     private void setupArrangerInfo() {
         try {
             binding.gridView.setBackgroundResource(R.drawable.rec_card_bac);

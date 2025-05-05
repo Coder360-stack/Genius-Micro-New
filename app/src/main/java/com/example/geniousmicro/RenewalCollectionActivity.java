@@ -1,7 +1,9 @@
 package com.example.geniousmicro;
 
-import  android.content.Intent;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,25 +20,30 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.geniousmicro.Data.PostDataParserObjectResponse;
 import com.example.geniousmicro.Data.VolleyCallback;
 import com.example.geniousmicro.Models.UtilityModels.PolicyDetailsModel;
-import com.example.geniousmicro.Models.UtilityModels.SBDataModel;
 import com.example.geniousmicro.Others.ApiLinks;
 import com.example.geniousmicro.UserData.GlobalUserData;
 import com.example.geniousmicro.activities.AgentPolicyDueReportDaywise;
+
+
 import com.example.geniousmicro.databinding.ActivityRenewalCollectionBinding;
-import com.example.geniousmicro.mssql.SqlManager;
+import com.example.geniousmicro.util.NetworkUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class RenewalCollectionActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = "RenewalCollection";
+    private static final int API_TIMEOUT = 30000; // 30 seconds timeout
+    private static final int MAX_RETRY_COUNT = 3;
 
     ActivityRenewalCollectionBinding binding;
     String status = "Approved";
@@ -45,7 +53,10 @@ public class RenewalCollectionActivity extends AppCompatActivity implements View
     private ArrayList<String> arrayList_policyCodeName = new ArrayList<>();
     private double actualLateFine = 0.0;
     private int IsLateFine = 0;
-
+    private String NAME;
+    private int currentRetryCount = 0;
+    private AlertDialog progressDialog;
+    private Handler timeoutHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +70,24 @@ public class RenewalCollectionActivity extends AppCompatActivity implements View
             return insets;
         });
 
+        initUI();
+        setupListeners();
+        handleIntent();
+    }
 
+    private void initUI() {
+        binding.cbPrintRecipt.setChecked(true);
+        createProgressDialog();
+    }
+
+    private void createProgressDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.progress_dialog);
+        builder.setCancelable(false);
+        progressDialog = builder.create();
+    }
+
+    private void setupListeners() {
         binding.btnSearchPolicy.setOnClickListener(this);
         binding.btnView.setOnClickListener(this);
         binding.cBtnView.setOnClickListener(this);
@@ -76,228 +104,246 @@ public class RenewalCollectionActivity extends AppCompatActivity implements View
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                // Do nothing
             }
         });
 
-        binding.isLatePaid.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (binding.isLatePaid.isChecked()) {
-                    IsLatePaid = "1";
-                } else {
-                    IsLatePaid = "0";
-                }
-            }
+        binding.isLatePaid.setOnClickListener(v -> {
+            IsLatePaid = binding.isLatePaid.isChecked() ? "1" : "0";
         });
+    }
 
+    private void handleIntent() {
         Intent intent = getIntent();
         if (intent.hasExtra("policyCode")) {
             String loancode = intent.getStringExtra("policyCode");
             binding.etSearchtxt.setText(loancode);
             if (!binding.etSearchtxt.getText().toString().isEmpty()) {
-                arrayList_policyCode.clear();
-                arrayList_policyCodeName.clear();
-                arrayList_policyCode.add("");
-                arrayList_policyCodeName.add("--Select An Item--");
+                resetPolicyLists();
                 searchPolicyByNameOrCode(binding.etSearchtxt.getText().toString());
             } else {
-                Toast.makeText(this, "Please Enter Policy Code OR Name", Toast.LENGTH_LONG).show();
+                showToast("Please Enter Policy Code OR Name");
             }
-
         }
-
-
     }
 
-    private void getPolicyDetails(String PolicyCode) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("PolicyCode", PolicyCode.trim());
-        map.put("ACode", GlobalUserData.employeeDataModel.getEmployeeID());
-        new PostDataParserObjectResponse(RenewalCollectionActivity.this, ApiLinks.GET_POLICYDETAILS, map, new VolleyCallback() {
-            @Override
-            public void onSuccessResponse(JSONObject result) {
-                try {
-                    JSONObject jsa = result.getJSONObject("rd");
-                    if (jsa.length() > 0) {
-                        Gson gson = new Gson();
-                        policyDetailsModel = gson.fromJson(String.valueOf(result.getJSONObject("rd")), PolicyDetailsModel.class);
-                        if (policyDetailsModel != null && policyDetailsModel.getApplicantName() != null) {
-                            binding.name.setText("Hi " + policyDetailsModel.getApplicantName());
-                            binding.txtPolicyCode.setText(policyDetailsModel.getPolicyCode());
-                            binding.DOC.setText(policyDetailsModel.getDateofCom());
-                            binding.plan.setText(policyDetailsModel.getPTable());
-                            binding.term.setText(policyDetailsModel.getTerm());
-                            //binding.lateFine.setText(policyDetailsModel.getIsLateFineApplicable());
-                            binding.lateFine.setText("Yes");
-                            binding.mode.setText(policyDetailsModel.getMode());
-                            binding.totalAmount.setText(policyDetailsModel.getTillAmount());
-                            binding.memberCode.setText(policyDetailsModel.getMemberCode());
-                            binding.PhoneNo.setText(policyDetailsModel.getPhoneNo());
-                            binding.emiAmount.setText(policyDetailsModel.getAmount());
-                            binding.depositeDate.setText(policyDetailsModel.getCDate());
-                        } else {
-                            binding.name.setText("Hi ");
-                            binding.txtPolicyCode.setText("");
-                            binding.DOC.setText("");
-                            binding.plan.setText("");
-                            binding.term.setText("");
-                            //binding.lateFine.setText(policyDetailsModel.getIsLateFineApplicable());
-                            binding.lateFine.setText("");
-                            binding.mode.setText("");
-                            binding.totalAmount.setText("");
-                            binding.memberCode.setText("");
-                            binding.PhoneNo.setText("");
-                            binding.emiAmount.setText("");
-                            binding.depositeDate.setText("");
-                            Toast.makeText(RenewalCollectionActivity.this, "PolicyCode is Not Associated with this arranger", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(RenewalCollectionActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                    Log.d("EX", e.toString());
-                }
-            }
-
-            @Override
-            public void onErrorResponse(String error) {
-                Log.e("Callback Error", error);
-            }
-        });
-
-
+    private void resetPolicyLists() {
+        arrayList_policyCode.clear();
+        arrayList_policyCodeName.clear();
+        arrayList_policyCode.add("");
+        arrayList_policyCodeName.add("--Select An Item--");
     }
 
     @Override
     public void onClick(View view) {
-        if (view == binding.btnSearchPolicy) {
-            if (!binding.etSearchtxt.getText().toString().isEmpty()) {
-                arrayList_policyCode.clear();
-                arrayList_policyCodeName.clear();
-                arrayList_policyCode.add("");
-                arrayList_policyCodeName.add("--Select An Item--");
-               // searchPolicyByNameOrCode(binding.etSearchtxt.getText().toString());
-                searchPolicyCode(binding.etSearchtxt.getText().toString(),GlobalUserData.employeeDataModel.getEmployeeID());
-            } else {
-                Toast.makeText(this, "Please Enter Policy Code OR Name", Toast.LENGTH_LONG).show();
-            }
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            showToast("No internet connection. Please check your network settings.");
+            return;
+        }
 
+        if (view == binding.btnSearchPolicy) {
+            handleSearchPolicyClick();
         } else if (view == binding.btnView) {
-            if (!binding.insNumber.getText().toString().isEmpty()) {
-                actualLateFine = 0.0;
-                IsLateFine = 0;
-                getInstChange();
-            } else {
-                Toast.makeText(this, "Please Enter Installment Number", Toast.LENGTH_LONG).show();
-            }
+            handleViewClick();
         } else if (view == binding.cBtnView) {
-            if (!binding.tilAmount.getText().toString().isEmpty()) {
+            handleCustomViewClick();
+        } else if (view == binding.btnSave) {
+            handleSaveClick();
+        }
+    }
+
+    private void handleSearchPolicyClick() {
+        if (!binding.etSearchtxt.getText().toString().isEmpty()) {
+            resetPolicyLists();
+            searchPolicyByNameOrCode(binding.etSearchtxt.getText().toString());
+        } else {
+            showToast("Please Enter Policy Code OR Name");
+        }
+    }
+
+    private void handleViewClick() {
+        if (!binding.insNumber.getText().toString().isEmpty()) {
+            actualLateFine = 0.0;
+            IsLateFine = 0;
+            getInstChange();
+        } else {
+            showToast("Please Enter Installment Number");
+        }
+    }
+
+    private void handleCustomViewClick() {
+        if (!binding.tilAmount.getText().toString().isEmpty()) {
+            try {
                 Double enteredAmount = Double.parseDouble(binding.tilAmount.getEditableText().toString().trim());
                 Double emiAmount = Double.parseDouble(binding.emiAmount.getText().toString());
                 int rem = (int) (enteredAmount % emiAmount);
                 int div = (int) (enteredAmount / emiAmount);
 
-                if (!(rem == 0)) {
-                    binding.fromInsNumber.setText("");
-                    binding.toInsNumber.setText("");
-                    binding.netAmount.setText("");
-                    Toast.makeText(this, "Please Enter Valid Amount", Toast.LENGTH_SHORT).show();
+                if (rem != 0) {
+                    clearInstallmentFields();
+                    showToast("Please Enter Valid Amount");
                 } else {
-//                    binding.tilFromInst.setText(String.valueOf(lastEMINo + 1));
-//                    binding.tilToInst.setText(String.valueOf(lastEMINo + div));
-//                    binding.tilNetAmount.setText(String.valueOf(emiAmount * div));
                     if (div <= Integer.parseInt(binding.term.getText().toString())) {
                         binding.insNumber.setText("" + div);
                         actualLateFine = 0.0;
                         IsLateFine = 0;
                         getInstChange();
                     } else {
-                        binding.fromInsNumber.setText("");
-                        binding.toInsNumber.setText("");
-                        binding.netAmount.setText("");
-                        Toast.makeText(this, "Please Enter Valid Amount", Toast.LENGTH_SHORT).show();
+                        clearInstallmentFields();
+                        showToast("Please Enter Valid Amount");
                     }
                 }
-            } else {
-                Toast.makeText(this, "Enter Amount", Toast.LENGTH_SHORT).show();
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "Error parsing amounts: " + e.getMessage());
+                showToast("Invalid amount format");
             }
-        } else if (view == binding.btnSave) {
-            if (!binding.txtPolicyCode.getText().toString().isEmpty()) {
-                if (!binding.totalAmount.getText().toString().isEmpty()) {
-                    checkRenewalPending(binding.txtPolicyCode.getText().toString());
-                } else {
-                    Toast.makeText(this, "Please Select the Installment Number", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(this, "Please Select Valid policy Code", Toast.LENGTH_LONG).show();
-            }
-
+        } else {
+            showToast("Enter Amount");
         }
-
     }
 
-    private void searchPolicyCode(String searchValue, String employeeID) {
-        Connection cn = new SqlManager().getSQLConnection();
-        try {
-            if (cn != null) {
-                CallableStatement smt = cn.prepareCall("{call ADROID_GetPolicyCodes_BY_CodeOrName(?,?)}");
-                smt.setString("@searchValue",searchValue);
-                smt.setString("@ArrangerCode",employeeID);
-                smt.execute();
-                ResultSet rs = smt.getResultSet();
-                if (rs.isBeforeFirst()){
-                    binding.spPolicyNameAndCodeList.setVisibility(View.VISIBLE);
-                    while (rs.next()) {
-                        arrayList_policyCode.add(rs.getString("AccountCode"));
-                        arrayList_policyCodeName.add(rs.getString("Name") + " - " + rs.getString("AccountCode"));
-
-                    }
-                    ArrayAdapter arrayAdapter = new ArrayAdapter(RenewalCollectionActivity.this, R.layout.row_savings_acc_hint, arrayList_policyCodeName);
-                    arrayAdapter.setDropDownViewResource(R.layout.row_savings_acc_hint);
-                    binding.spPolicyNameAndCodeList.setAdapter(arrayAdapter);
-
-                }else{
-                    Toast.makeText(RenewalCollectionActivity.this, "No Data Found", Toast.LENGTH_SHORT).show();
-                }
-            }else{
-                Toast.makeText(RenewalCollectionActivity.this, "Some Error Occurred", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Toast.makeText(RenewalCollectionActivity.this, "Some Error Occurred", Toast.LENGTH_SHORT).show();
-        }
-
-
+    private void clearInstallmentFields() {
+        binding.fromInsNumber.setText("");
+        binding.toInsNumber.setText("");
+        binding.netAmount.setText("");
     }
 
-    private void checkRenewalPending(String policyCode) {
-        binding.btnSave.setVisibility(View.GONE);
+    private void handleSaveClick() {
+        if (!binding.txtPolicyCode.getText().toString().isEmpty()) {
+            if (!binding.totalAmount.getText().toString().isEmpty()) {
+                showProgressDialog("Checking renewal status...");
+                checkRenewalPending(binding.txtPolicyCode.getText().toString());
+            } else {
+                showToast("Please Select the Installment Number");
+            }
+        } else {
+            showToast("Please Select Valid policy Code");
+        }
+    }
+
+    private void getPolicyDetails(String PolicyCode) {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            showToast("No internet connection. Please check your network settings.");
+            return;
+        }
+
+        showProgressDialog("Loading policy details...");
         HashMap<String, String> map = new HashMap<>();
-        map.put("Code", policyCode.toString().trim());
-        map.put("SearchTag", "policy");
-        new PostDataParserObjectResponse(RenewalCollectionActivity.this, ApiLinks.CHECK_IFRENEWALPENDING, map, new VolleyCallback() {
+        map.put("PolicyCode", PolicyCode.trim());
+        map.put("ACode", GlobalUserData.employeeDataModel.getEmployeeID());
+
+        startApiTimeout("Get Policy Details");
+
+        new PostDataParserObjectResponse(RenewalCollectionActivity.this, ApiLinks.GET_POLICYDETAILS, map, new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONObject result) {
+                cancelApiTimeout();
+                hideProgressDialog();
                 try {
-                    JSONObject jsa = result.getJSONObject("status");
-                    if (jsa.getString("Status").equals("0")) {
-                        SaveRenewal();
+                    if (result.has("rd")) {
+                        JSONObject jsa = result.getJSONObject("rd");
+                        if (jsa.length() > 0) {
+                            Gson gson = new Gson();
+                            policyDetailsModel = gson.fromJson(String.valueOf(result.getJSONObject("rd")), PolicyDetailsModel.class);
+                            if (policyDetailsModel != null && policyDetailsModel.getApplicantName() != null) {
+                                updatePolicyDetailsUI();
+                            } else {
+                                clearPolicyDetailsUI();
+                                showToast("PolicyCode is Not Associated with this arranger");
+                            }
+                        } else {
+                            clearPolicyDetailsUI();
+                            showToast("No policy details found");
+                        }
                     } else {
-                        Toast.makeText(RenewalCollectionActivity.this, "Pevious Renewal is on Pending", Toast.LENGTH_SHORT).show();
+                        showToast("Invalid response format");
                     }
-
-
                 } catch (Exception e) {
-                    Toast.makeText(RenewalCollectionActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                    Log.d("EX1", e.toString());
+                    Log.e(TAG, "Error parsing policy details: " + e.getMessage(), e);
+                    showToast("Error retrieving policy details");
                 }
             }
 
             @Override
             public void onErrorResponse(String error) {
-                Log.e("Callback Error", error);
+                cancelApiTimeout();
+                hideProgressDialog();
+                Log.e(TAG, "API Error: " + error);
+                showToast("Failed to get policy details. Please try again.");
             }
         });
-        binding.btnSave.setVisibility(View.VISIBLE);
+    }
+
+    private void updatePolicyDetailsUI() {
+        binding.name.setText("Hi " + policyDetailsModel.getApplicantName());
+        NAME = policyDetailsModel.getApplicantName();
+        binding.txtPolicyCode.setText(policyDetailsModel.getPolicyCode());
+        binding.DOC.setText(policyDetailsModel.getDateofCom());
+        binding.plan.setText(policyDetailsModel.getPTable());
+        binding.term.setText(policyDetailsModel.getTerm());
+        binding.lateFine.setText("Yes");
+        binding.mode.setText(policyDetailsModel.getMode());
+        binding.totalAmount.setText(policyDetailsModel.getTillAmount());
+        binding.memberCode.setText(policyDetailsModel.getMemberCode());
+        binding.PhoneNo.setText(policyDetailsModel.getPhoneNo());
+        binding.emiAmount.setText(policyDetailsModel.getAmount());
+        binding.depositeDate.setText(policyDetailsModel.getCDate());
+    }
+
+    private void clearPolicyDetailsUI() {
+        binding.name.setText("Hi ");
+        binding.txtPolicyCode.setText("");
+        binding.DOC.setText("");
+        binding.plan.setText("");
+        binding.term.setText("");
+        binding.lateFine.setText("");
+        binding.mode.setText("");
+        binding.totalAmount.setText("");
+        binding.memberCode.setText("");
+        binding.PhoneNo.setText("");
+        binding.emiAmount.setText("");
+        binding.depositeDate.setText("");
+    }
+
+    private void checkRenewalPending(String policyCode) {
+        binding.btnSave.setEnabled(false);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Code", policyCode.trim());
+        map.put("SearchTag", "policy");
+
+        startApiTimeout("Check Renewal Pending");
+
+        new PostDataParserObjectResponse(RenewalCollectionActivity.this, ApiLinks.CHECK_IFRENEWALPENDING, map, new VolleyCallback() {
+            @Override
+            public void onSuccessResponse(JSONObject result) {
+                cancelApiTimeout();
+                try {
+                    JSONObject jsa = result.getJSONObject("status");
+                    if (jsa.getString("Status").equals("0")) {
+                        updateProgressDialog("Saving renewal...");
+                        SaveRenewal();
+                    } else {
+                        hideProgressDialog();
+                        binding.btnSave.setEnabled(true);
+                        showToast("Previous Renewal is Pending");
+                    }
+                } catch (Exception e) {
+                    hideProgressDialog();
+                    binding.btnSave.setEnabled(true);
+                    Log.e(TAG, "Error checking renewal pending: " + e.getMessage(), e);
+                    showToast("Error checking renewal status");
+                }
+            }
+
+            @Override
+            public void onErrorResponse(String error) {
+                cancelApiTimeout();
+                hideProgressDialog();
+                binding.btnSave.setEnabled(true);
+                Log.e(TAG, "API Error: " + error);
+                showToast("Failed to check renewal status. Please try again.");
+            }
+        });
     }
 
     private void SaveRenewal() {
@@ -313,145 +359,296 @@ public class RenewalCollectionActivity extends AppCompatActivity implements View
         map.put("isLatePaid", IsLatePaid);
         map.put("ReturnVoucherNo", "0");
         map.put("IsError", "0");
+
+        startApiTimeout("Save Renewal");
+
         new PostDataParserObjectResponse(RenewalCollectionActivity.this, ApiLinks.INSERT_RENEWAL, map, new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONObject result) {
+                cancelApiTimeout();
+                hideProgressDialog();
+                binding.btnSave.setEnabled(true);
                 try {
                     JSONObject jsa = result.getJSONObject("response");
                     if (jsa.getString("ErrorCode").equals("0")) {
-                        Toast.makeText(RenewalCollectionActivity.this, "Saved Successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(RenewalCollectionActivity.this, RenewalCollectionActivity.class));
-                        finish();
+                        showToast("Saved Successfully");
+                       /* if (binding.cbPrintRecipt.isChecked()) {
+                            Print();
+                        } else {*/
+                            startActivity(new Intent(RenewalCollectionActivity.this, RenewalCollectionActivity.class));
+                            finish();
+                       // }
                     } else {
-                        Toast.makeText(RenewalCollectionActivity.this, "Unable To Save", Toast.LENGTH_SHORT).show();
+                        String errorMessage = jsa.has("Message") ? jsa.getString("Message") : "Unable To Save";
+                        showToast(errorMessage);
+                        // Reset retry counter when we get an error response
+                        currentRetryCount = 0;
                     }
                 } catch (Exception e) {
-                    Toast.makeText(RenewalCollectionActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                    Log.d("EX1", e.toString());
+                    Log.e(TAG, "Error saving renewal: " + e.getMessage(), e);
+                    showToast("Error processing the save request");
                 }
             }
 
             @Override
             public void onErrorResponse(String error) {
-                Log.e("Callback Error", error);
+                cancelApiTimeout();
+                hideProgressDialog();
+                binding.btnSave.setEnabled(true);
+                Log.e(TAG, "API Error: " + error);
+
+                if (currentRetryCount < MAX_RETRY_COUNT) {
+                    currentRetryCount++;
+                    showToast("Save failed. Retrying... (" + currentRetryCount + "/" + MAX_RETRY_COUNT + ")");
+                    new Handler().postDelayed(() -> SaveRenewal(), 1000);
+                } else {
+                    showToast("Failed to save renewal after multiple attempts. Please try again later.");
+                    currentRetryCount = 0;
+                }
             }
         });
+    }
 
+    private void Print() {
+        try {
+            LocalDateTime currentDateTime = null;
+            DateTimeFormatter formatter = null;
+            String formattedDateTime = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                currentDateTime = LocalDateTime.now();
+                formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                formattedDateTime = currentDateTime.format(formatter);
+            }
 
+            int CLAMT = Integer.parseInt(binding.totalAmount.getText().toString()) + Integer.parseInt(binding.netAmount.getText().toString());
+            String Employcode = GlobalUserData.employeeDataModel.getEmployeeID();
+            String Officeid = GlobalUserData.employeeDataModel.getOfficeid();
+            //String Phone = GlobalUserData.employeeDataModel.get();
+
+            String customMessage =
+                    "-------------------------------\n" +
+                            "| " + getResources().getString(R.string.app_name) + ". |\n" +
+                            "-------------------------------\n" +
+                            String.format("| Open Date:  %s \n", binding.DOC.getText().toString()) +
+                            String.format("| Name :  %s \n", NAME) +
+                            String.format("| Policy code:  %s \n", binding.txtPolicyCode.getText().toString()) +
+                            String.format("| Tr. Date :  %s \n", "" + formattedDateTime) +
+                            String.format("| Inst No. :  %s \n", binding.fromInsNumber.getText().toString() + " FROM " + binding.toInsNumber.getText().toString()) +
+                            String.format("| OPN.BAL. :  %s \n", binding.totalAmount.getText().toString()) +
+                            String.format("| COLL.AMT :  %s \n", binding.netAmount.getText().toString()) +
+                            String.format("| CL.BAL :  %s ", CLAMT) +
+                            String.format(" Mode :  %s\n", "CASH") +
+                            String.format("| EMP. :  %s", Employcode) +
+                            String.format(" OFFICE. :  %s\n ", Officeid) +
+                            String.format("| This is system generated & does not require signature") +
+                            "\n\n\n\n\n";
+
+          /*  Intent intent;
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+                intent = new Intent(RenewalCollectionActivity.this, PrintSecondActivity.class);
+            } else {
+                intent = new Intent(RenewalCollectionActivity.this, PrintActivity.class);
+            }
+            intent.putExtra("printtxt", customMessage);
+            intent.putExtra("Page", "POLICY_PRINT");
+            startActivity(intent);*/
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error in print: " + e.getMessage(), e);
+            showToast("Error generating print receipt");
+        }
     }
 
     private void getInstChange() {
         try {
             int toinstno = Integer.parseInt(binding.insNumber.getText().toString());
-            Log.d("ins", "getInstChange: " + Integer.parseInt(policyDetailsModel.getLastInstNo() + toinstno));
-            Log.d("ins", "getInstChange: " + toinstno);
-            Log.d("ins", "getInstChange: " + Integer.parseInt(binding.term.getText().toString()));
             if (Integer.parseInt(policyDetailsModel.getLastInstNo()) + toinstno <= Integer.parseInt(binding.term.getText().toString())) {
-
                 binding.fromInsNumber.setText(String.valueOf(Integer.parseInt(policyDetailsModel.getLastInstNo()) + 1));
                 binding.toInsNumber.setText(String.valueOf(Integer.parseInt(policyDetailsModel.getLastInstNo()) + toinstno));
                 binding.netAmount.setText(String.valueOf(Integer.parseInt(binding.emiAmount.getText().toString()) * toinstno));
                 getRenewalLatefine();
             } else {
-                Toast.makeText(this, "Enter Valid Installment Number", Toast.LENGTH_SHORT).show();
+                showToast("Enter Valid Installment Number");
             }
-
+        } catch (NumberFormatException ex) {
+            Log.e(TAG, "Error parsing installment numbers: " + ex.getMessage());
+            showToast("Invalid installment number");
         } catch (Exception ex) {
-
+            Log.e(TAG, "Unexpected error: " + ex.getMessage(), ex);
+            showToast("Error calculating installments");
         }
     }
 
     private void getRenewalLatefine() {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            showToast("No internet connection. Please check your network settings.");
+            return;
+        }
+
+        showProgressDialog("Calculating late fine...");
         HashMap<String, String> map = new HashMap<>();
         map.put("PolicyCode", Objects.requireNonNull(binding.txtPolicyCode.getText()).toString().trim());
         map.put("FromInstNo", Objects.requireNonNull(binding.fromInsNumber.getText()).toString().trim());
         map.put("ToInstNo", Objects.requireNonNull(binding.toInsNumber.getText()).toString().trim());
+
+        startApiTimeout("Get Late Fine");
+
         new PostDataParserObjectResponse(RenewalCollectionActivity.this, ApiLinks.GET_RENEWALLATEFINE, map, new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONObject result) {
+                cancelApiTimeout();
+                hideProgressDialog();
                 try {
-                    JSONArray jsa = result.getJSONArray("latefinedetails");
-                    if (jsa.length() > 0) {
-                        binding.lateFineLayout.setVisibility(View.VISIBLE);
-                        for (int i = 0; i < jsa.length(); i++) {
-                            actualLateFine += Double.parseDouble(jsa.getJSONObject(i).getString("LateFine"));
-                        }
-                        IsLateFine = 1;
-                        binding.latefineAmount.setText(String.valueOf(actualLateFine));
-                    } else {
-                        binding.lateFineLayout.setVisibility(View.GONE);
+                    if (result.has("latefinedetails")) {
+                        JSONArray jsa = result.getJSONArray("latefinedetails");
                         actualLateFine = 0.0;
-                        binding.latefineAmount.setText(String.valueOf(0));
-                        IsLateFine = 0;
-                        Toast.makeText(RenewalCollectionActivity.this, "Late fine not applicable", Toast.LENGTH_SHORT).show();
+
+                        if (jsa.length() > 0) {
+                            binding.lateFineLayout.setVisibility(View.VISIBLE);
+                            for (int i = 0; i < jsa.length(); i++) {
+                                actualLateFine += Double.parseDouble(jsa.getJSONObject(i).getString("LateFine"));
+                            }
+                            IsLateFine = 1;
+                            binding.latefineAmount.setText(String.valueOf(actualLateFine));
+                        } else {
+                            binding.lateFineLayout.setVisibility(View.GONE);
+                            binding.latefineAmount.setText("0");
+                            IsLateFine = 0;
+                            showToast("Late fine not applicable");
+                        }
+                    } else {
+                        showToast("Invalid response format");
                     }
-
-
                 } catch (Exception e) {
-                    Toast.makeText(RenewalCollectionActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                    Log.d("EX1", e.toString());
+                    Log.e(TAG, "Error parsing late fine: " + e.getMessage(), e);
+                    showToast("Error calculating late fine");
                 }
             }
 
             @Override
             public void onErrorResponse(String error) {
-                Log.e("Callback Error", error);
+                cancelApiTimeout();
+                hideProgressDialog();
+                Log.e(TAG, "API Error: " + error);
+                showToast("Failed to calculate late fine. Please try again.");
             }
         });
-
-
     }
 
     private void searchPolicyByNameOrCode(String searchValue) {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            showToast("No internet connection. Please check your network settings.");
+            return;
+        }
+
+        showProgressDialog("Searching policies...");
         HashMap<String, String> map = new HashMap<>();
         map.put("SearchValue", searchValue.trim());
         map.put("SearchTag", "Policy");
+        // map.put("ArrangerCode", GlobalUserData.employeeDataModel.getEmployeeID());
+
+        startApiTimeout("Search Policy");
+
         new PostDataParserObjectResponse(RenewalCollectionActivity.this, ApiLinks.GET_ACCOUNTDETAILS, map, new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONObject result) {
+                cancelApiTimeout();
+                hideProgressDialog();
                 try {
-                    binding.spPolicyNameAndCodeList.setVisibility(View.VISIBLE);
-                    JSONArray jsa = result.getJSONArray("accountDetails");
-                    for (int i = 0; i < jsa.length(); i++) {
-                        arrayList_policyCode.add(jsa.getJSONObject(i).getString("AccountCode"));
-                        arrayList_policyCodeName.add(jsa.getJSONObject(i).getString("Name") + " - " + jsa.getJSONObject(i).getString("AccountCode"));
+                    if (result.has("accountDetails")) {
+                        JSONArray jsa = result.getJSONArray("accountDetails");
+                        if (jsa.length() > 0) {
+                            binding.spPolicyNameAndCodeList.setVisibility(View.VISIBLE);
+                            for (int i = 0; i < jsa.length(); i++) {
+                                arrayList_policyCode.add(jsa.getJSONObject(i).getString("AccountCode"));
+                                arrayList_policyCodeName.add(jsa.getJSONObject(i).getString("Name") + " - " + jsa.getJSONObject(i).getString("AccountCode"));
+                            }
+                            ArrayAdapter arrayAdapter = new ArrayAdapter(RenewalCollectionActivity.this, R.layout.row_savings_acc_hint, arrayList_policyCodeName);
+                            arrayAdapter.setDropDownViewResource(R.layout.row_savings_acc_hint);
+                            binding.spPolicyNameAndCodeList.setAdapter(arrayAdapter);
+                        } else {
+                            showToast("No policies found with the provided search term");
+                        }
+                    } else {
+                        showToast("Invalid response format");
                     }
-                    ArrayAdapter arrayAdapter = new ArrayAdapter(RenewalCollectionActivity.this, R.layout.row_savings_acc_hint, arrayList_policyCodeName);
-                    arrayAdapter.setDropDownViewResource(R.layout.row_savings_acc_hint);
-                    binding.spPolicyNameAndCodeList.setAdapter(arrayAdapter);
-
                 } catch (Exception e) {
-                    Toast.makeText(RenewalCollectionActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                    Log.d("EX", e.toString());
+                    Log.e(TAG, "Error parsing policy search: " + e.getMessage(), e);
+                    showToast("Error retrieving policies");
                 }
             }
 
             @Override
             public void onErrorResponse(String error) {
-                Log.e("Callback Error", error);
+                cancelApiTimeout();
+                hideProgressDialog();
+                Log.e(TAG, "API Error: " + error);
+                showToast("Failed to search policies. Please try again.");
             }
         });
-
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
         Intent intent = getIntent();
         if (intent.hasExtra("policyCode")) {
-            String loancode = intent.getStringExtra("policyCode");
             startActivity(new Intent(RenewalCollectionActivity.this, AgentPolicyDueReportDaywise.class));
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
-
         } else {
             startActivity(new Intent(RenewalCollectionActivity.this, MainActivity.class));
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
         }
-
-
     }
 
+    // Helper methods for UI feedback and API timeout management
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showProgressDialog(String message) {
+        if (progressDialog == null) {
+            createProgressDialog();
+        }
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    private void updateProgressDialog(String message) {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            // Could update text if dialog has a TextView
+        }
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void startApiTimeout(String apiName) {
+        timeoutHandler.postDelayed(() -> {
+            Log.e(TAG, apiName + " API timeout");
+            hideProgressDialog();
+            showToast(apiName + " request timed out. Please try again.");
+            // Re-enable any disabled buttons
+            binding.btnSave.setEnabled(true);
+        }, API_TIMEOUT);
+    }
+
+    private void cancelApiTimeout() {
+        timeoutHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cancelApiTimeout();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
 }
