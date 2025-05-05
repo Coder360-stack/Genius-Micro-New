@@ -13,9 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-
-
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="306dp"
@@ -62,7 +59,6 @@
                     android:orientation="horizontal" />
             </RelativeLayout>
 
-
             <LinearLayout
                 android:background="@drawable/narrow_line_rec"
                 android:padding="@dimen/_5mdp"
@@ -82,7 +78,7 @@
                         android:layout_weight="40"
                         android:background="@drawable/background_circale_image"
                         android:layout_height="wrap_content">
-                        <ImageView
+                        <de.hdodenhof.circleimageview.CircleImageView
                             android:layout_width="10dp"
                             android:layout_height="50dp"
                             android:layout_gravity="center"
@@ -91,7 +87,6 @@
 
                             android:src="@drawable/employee" />
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:layout_width="60dp"

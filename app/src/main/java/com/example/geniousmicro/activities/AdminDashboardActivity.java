@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.geniousmicro.UserData.GlobalUserData;
 import com.example.geniousmicro.mssql.SqlManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -153,7 +154,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
         barChart = findViewById(R.id.barChart);
         pieChart = findViewById(R.id.pieChart);
 
-           binding.userCode.setText(""+GlobalUserData.adminDataModel.getAdminID());
+        binding.userCode.setText(""+ GlobalUserData.adminDataModel.getAdminID());
         getOfficeDetails();
         CurrentDate();
         Fromdate.setOnClickListener(new View.OnClickListener() {
@@ -339,7 +340,6 @@ public class AdminDashboardActivity extends AppCompatActivity implements View.On
                 ResultSet rs = smt.getResultSet();
                 if (rs.isBeforeFirst()){
                     while (rs.next()) {
-
 
                         officecode.add(rs.getString("OfficeID"));
                         officnamewithcode.add(rs.getString("OfficeID")+"-"+rs.getString("OfficeName"));

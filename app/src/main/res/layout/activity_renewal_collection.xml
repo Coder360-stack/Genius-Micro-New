@@ -27,7 +27,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_gravity="center"
                 android:textAlignment="center"
-                android:text="Renewal Collection "
+                android:text="Renewal Collection"
                 android:textColor="#fff"
                 android:textSize="25sp"
                 android:textStyle="bold" />
@@ -188,7 +188,6 @@
 
                             </com.google.android.material.textfield.TextInputLayout>
                             <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/filledTextField"
                                 android:layout_margin="@dimen/_2mdp"
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="0dp"
@@ -202,7 +201,6 @@
                                     android:id="@+id/DOC"
                                     android:focusable="true"
                                     android:editable="false"
-
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content" />
 
@@ -833,7 +831,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-
                             android:background="@drawable/background_white">
 
                             <LinearLayout
@@ -896,6 +893,24 @@
                                 android:layout_marginEnd="5dp"
                                 android:checked="false"
                                 android:text="Want To Pay LateFine" />
+
+
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:orientation="horizontal">
+
+                            <CheckBox
+                                android:id="@+id/cb_printRecipt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="5dp"
+                                android:text="Print Receipt" />
 
 
 
