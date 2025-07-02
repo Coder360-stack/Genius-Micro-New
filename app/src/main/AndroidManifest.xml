@@ -127,6 +127,12 @@
             android:name=".activities.MemberContactUsActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.MemberChangePassword"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MemberSavingsAccountDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.AdminDashExecutiveCollectionReportActivity"
             android:exported="false" />
         <activity

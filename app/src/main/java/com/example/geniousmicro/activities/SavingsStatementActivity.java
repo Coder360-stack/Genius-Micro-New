@@ -98,7 +98,7 @@ public class SavingsStatementActivity extends AppCompatActivity {
         arrayList_policyCode.add("");
         arrayList_policyCodeName.add("--Select Account --");
         searchPolicyByNameOrCode(GlobalUserData.memberDataModel.getMemberID());
-      //  GetMemberAccountDetails();
+       // GetMemberAccountDetails(GlobalUserData.memberDataModel.getMemberID());
 
 
 
@@ -157,7 +157,7 @@ public class SavingsStatementActivity extends AppCompatActivity {
     private void searchPolicyByNameOrCode(String searchValue) {
         HashMap<String, String> map = new HashMap<>();
         map.put("SearchValue", searchValue.trim());
-        map.put("SearchTag", "Loan");
+        map.put("SearchTag", "savings");
         new PostDataParserObjectResponse(SavingsStatementActivity.this, ApiLinks.GET_ACCOUNTDETAILS, map, new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONObject result) {
@@ -185,11 +185,11 @@ public class SavingsStatementActivity extends AppCompatActivity {
         });
 
     }
-    private void GetMemberAccountDetails() {
+    private void GetMemberAccountDetails(String mcode) {
         HashMap<String, String> map = new HashMap<>();
 
-        map.put("SearchValue","M00000017");
-        map.put("SearchTag", "Loan");
+        map.put("SearchValue",mcode);
+        map.put("SearchTag", "savings");
         new PostDataParserObjectResponse(SavingsStatementActivity.this, ApiLinks.GET_MEMBER_ACCOUNT_DETAILS, map, new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONObject result) {
@@ -372,7 +372,7 @@ public class SavingsStatementActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(getApplicationContext(), MemberDashboardActivity.class));
+        startActivity(new Intent(getApplicationContext(), MemberSavingsAccountDetailsActivity.class));
         finishAffinity();
     }
 }
