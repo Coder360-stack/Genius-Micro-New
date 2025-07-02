@@ -80,7 +80,7 @@ public class MemberDashboardActivity extends AppCompatActivity implements View.O
     public void onClick(View view) {
 
         if (view == binding.SavingsAccountCard) {
-            navigateToNextActivity(SavingsStatementActivity.class);
+            navigateToNextActivity(MemberSavingsAccountDetailsActivity.class);
         } else if (view == binding.LoanStatementCard) {
             navigateToNextActivity(LoanStatementActivity.class);
         } else if (view == binding.InvestmentAccountCard) {
@@ -154,6 +154,8 @@ public class MemberDashboardActivity extends AppCompatActivity implements View.O
 
         } else if (item.getItemId()==R.id.nav_drawer_member_contact_us) {
             startActivity(new Intent(MemberDashboardActivity.this, MemberContactUsActivity.class));
+        } else if (item.getItemId()==R.id.nav_drawer_change_pin) {
+            startActivity(new Intent(MemberDashboardActivity.this, MemberChangePassword.class));
         }
         return true;
     }
